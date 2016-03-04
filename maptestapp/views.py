@@ -14,6 +14,7 @@ from .import views
 def plot(request):
 
     coordinates = '[{lat:41.468449, lng:-81.812221},{lat: 41.363, lng: -81.044}, {lat:42.345,lng:-81.234}]'
+    marker = ["{%static 'img/BP.png'%}"]
 
     return render(request, 'multiple.html', {'coordinates':coordinates})
 

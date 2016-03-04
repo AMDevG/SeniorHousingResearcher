@@ -101,6 +101,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
-
+STATIC_ROOT = ''
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.sep.join([os.path.dirname(os.path.dirname(__file__)), 'static']),
+)
 #AUTH_USER_MODEL = 'maptestapp.Account'
