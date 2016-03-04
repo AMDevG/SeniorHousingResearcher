@@ -24,7 +24,7 @@
     
     <script>
       function initMap() {
-       	var addresses = {{coordinates}}
+       	var addresses = {{new_str}}
        	var sec = addresses[0]	
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 7,
@@ -34,10 +34,11 @@
       
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
         for(i =0; i < addresses.length; i++){
+
         var marker = new google.maps.Marker({
           position: addresses[i],
           map: map,
-          icon: "{%static 'img/BP.png' %}"
+          icon: "{%static 'img/BPMarker.png' %}"
 
         });	
    
