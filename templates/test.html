@@ -1,0 +1,19 @@
+<html>
+
+{% load easy_maps_tags %}
+
+<div> 
+
+{%for address in addresslist%}
+{% easy_map address 2000 800 15 %}  <!-- Length X Width X Zoom -->
+{%endfor%}
+
+</div>
+
+
+
+
+
+
+
+</html>
