@@ -26,6 +26,11 @@ def plot(request):
         addr3 = request.POST.get('addr3', None)
         addr4 = request.POST.get('addr4', None)
         addr5 = request.POST.get('addr5', None)
+        addr6 = request.POST.get('addr6', None)
+        addr7 = request.POST.get('addr7', None)
+        addr8 = request.POST.get('addr8', None)
+        addr9 = request.POST.get('addr9', None)
+
 
         if subject != '':
             coords.append(subject)
@@ -39,7 +44,14 @@ def plot(request):
             coords.append(addr4)
         if addr5 != '':
             coords.append(addr5)
-        print(len(coords))
+        if addr6 != '':
+            coords.append(addr6)
+        if addr7 != '':    
+            coords.append(addr7)
+        if addr8 != '':
+            coords.append(addr8)
+        if addr9 != '':
+            coords.append(addr9)
 
     for address in coords:
         g = geocoder.google(address)
@@ -56,7 +68,7 @@ def plot(request):
     subject_address = coordinate_pairs[0]
     subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
 
-    #print(subject_str)
+    print(subject_str)
 
     for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
         target_address = coordinate_pairs[i]
@@ -65,15 +77,13 @@ def plot(request):
 
         distance_dict[target_str] = distance
 
-
     sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
     sorted_pairs.insert(0,subject_str)
     
                                            ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST 
-
     for item in sorted_pairs:
+        split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
 
-        split_coords = item.split()                     ## FORMATS FOR JAVASCRIPT
         for i in range(0,len(sorted_pairs)):
             formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
             if formatted not in to_pass: 
@@ -85,15 +95,13 @@ def plot(request):
     
     new_str = new_str +']'
 
+    print (new_str)
+
     return render(request, 'multiple.html', {'new_str':new_str})
 
 def index(request):
 
     return render(request, 'index.html')
-
-def home(request):
-	addresslist = ['2376 Woodward Avenue, Lakewood, OH 44107']
-	return render(request, 'test.html', { 'addresslist':addresslist} )
 
 def signup(request):
 
@@ -104,18 +112,10 @@ def success(request):
 	if request.method == 'POST':
 		email_addr = request.POST.get('email')
 		user_name = request.POST.get('username')
-
 		email_list = [email_addr]
-
-	
-
 		Account.objects.create_user(email_addr, username=user_name)
 
 	return render(request, 'success.html', {'email_list':email_list})
-
-
-
-
 
 
 class AccountViewSet(viewsets.ModelViewSet):
