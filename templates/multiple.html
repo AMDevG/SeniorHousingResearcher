@@ -6,7 +6,7 @@
   
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Simple markers</title>
+    <title>Blueprint Mapper</title>
     <style>
       html, body {
         height: 100%;
@@ -19,65 +19,41 @@
     </style>
   </head>
   <body>
-
     <div id="map"></div>
-    
     <script>
       function initMap() {
        	var addresses = {{new_str}}
-  
        	var sec = addresses[0]	
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 15,
+          zoom: 16,
           center: sec
         });
-
     
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
         for(i=0; i < addresses.length; i++){
-
-        if(i==0){
-        var marker = new google.maps.Marker({
-          position: addresses[i],
-          map: map,
-          icon: "{%static 'img/BPMarker.png' %}"
-        });	
+            if(i==0){
+                var marker = new google.maps.Marker({
+                  position: addresses[i],
+                  map: map,
+                  icon: "{%static 'img/BPMarker.png' %}"
+            });	
       }
+      
       else{
-
-        var image_select = "{%static 'img/Circle" + i + ".png' %}"
-        
-         var marker = new google.maps.Marker({
-          position: addresses[i],
-          map: map,
-          icon: image_select          //'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+i+'|FE6256|000000'
-        }); 
-
-
-        }
-      }
+              var image_select = "{%static 'img/Circle" + i + ".png' %}"
+              var marker = new google.maps.Marker({
+              position: addresses[i],
+              map: map,
+              icon: image_select         
+            }
+          }
+       }
 
 
-     /* for(i=1; i < addresses.length; i++){
-
-        alert("second for loop")
-
-        alert(addresses[i].toSource())
-        var marker = new google.maps.Marker({
-          position : address[i],
-          map: map,
-          icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=2|FE6256|000000'
-        });
-
-      }
-      */
-  }
-    </script>
-
+  </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABAGhtae7h91pf24nfyZ6eFiPThWW3W4M&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABAGhtae7h91pf24nfyZ6eFiPThWW3W4M&callback=initMap">
     </script>
-
   </body>
 </html>

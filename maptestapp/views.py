@@ -65,12 +65,11 @@ def plot(request):
 
         distance_dict[target_str] = distance
 
-    #print (distance_dict)
 
     sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
     sorted_pairs.insert(0,subject_str)
     
-    #print(sorted_pairs)                                 ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST 
+                                           ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST 
 
     for item in sorted_pairs:
 
@@ -85,7 +84,7 @@ def plot(request):
         item = item.replace("'","")   
     
     new_str = new_str +']'
-    #print (new_str)
+
     return render(request, 'multiple.html', {'new_str':new_str})
 
 def index(request):
