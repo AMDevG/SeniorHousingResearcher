@@ -1,19 +1,36 @@
 <html>
 
+<!DOCTYPE html>
+<html>
+<title>W3.CSS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 <body>
 
-<form action = "/home/plot/" method="POST" id="plotForm">
+<form class="w3-container" action = "/home/plot/" method="POST" id="plotForm">
 	{% csrf_token %}
   	
-	<input type="text" name="subject">Enter the subject property address <br><br>
-	<input type="text" name="addr1">Prop 1<br><br>
-	<input type="text" name="addr2">Prop 2<br><br>
-	<input type="text" name="addr3">Prop 3<br><br>
-	<input type="text" name="addr4">Prop 4<br><br>
-	<input type="text" name="addr5">Prop 5<br><br>
-	<input type="submit" class="button scrolly" value="Plot Facilities" id="send">
+	<label class="w3-label">Subject Property</label>
+	<input type="text" class ="w3-input"  name="subject"><br><br>
 
+	<label class="w3-label">Property Address</label>
+	<input type="text" name="addr1"><br><br>
+
+	<label class="w3-label">Property Address</label>
+	<input type="text" name="addr2"><br><br>
+	
+	<label class="w3-label">Property Address</label>
+	<input type="text" name="addr3"><br><br>
+	
+	<label class="w3-label">Property Address</label>
+	<input type="text" name="addr4"><br><br>
+	
+	<label class="w3-label">Property Address</label>
+	<input type="text" name="addr5"><br><br>
+
+	<input type="submit" class="button scrolly" value="Plot Facilities" id="send">
 </form>
 
+</div>
 </body>
 </html>

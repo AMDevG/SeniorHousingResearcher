@@ -25,24 +25,51 @@
     <script>
       function initMap() {
        	var addresses = {{new_str}}
+  
        	var sec = addresses[0]	
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 7,
+          zoom: 10,
           center: sec
         });
 
       
+      
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-        for(i =0; i < addresses.length; i++){
 
+        for(i=0; i < addresses.length; i++){
+
+        if(i==0){
         var marker = new google.maps.Marker({
           position: addresses[i],
           map: map,
           icon: "{%static 'img/BPMarker.png' %}"
-
         });	
-   
       }
+      else{
+         var marker = new google.maps.Marker({
+          position: addresses[i],
+          map: map,
+          icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+i+'|FE6256|000000'
+        }); 
+
+
+        }
+      }
+
+
+     /* for(i=1; i < addresses.length; i++){
+
+        alert("second for loop")
+
+        alert(addresses[i].toSource())
+        var marker = new google.maps.Marker({
+          position : address[i],
+          map: map,
+          icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=2|FE6256|000000'
+        });
+
+      }
+      */
   }
     </script>
 

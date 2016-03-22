@@ -4,13 +4,13 @@
 # # Create your views here.
 from django.shortcuts import render
 from rest_framework import permissions, viewsets,views
-
 from maptestapp.models import Account
 from maptestapp.permissions import IsAccountOwner
 from maptestapp.serializers import AccountSerializer
 import geocoder
+from geopy.distance import vincenty
+from geopy.geocoders import Nominatim
 from .import views
-
 
 def plot(request):
     coords = []
@@ -29,7 +29,6 @@ def plot(request):
 
         if subject != '':
             coords.append(subject)
-
         if addr1!= '':
             coords.append(addr1)
         if addr2 != '':
@@ -40,21 +39,64 @@ def plot(request):
             coords.append(addr4)
         if addr5 != '':
             coords.append(addr5)
-
         print(len(coords))
 
     for address in coords:
         g = geocoder.google(address)
-    
         coordinate_pair = str(g.latlng)
         coordinate_pair = coordinate_pair.replace('[',"")
         coordinate_pair = coordinate_pair.replace(']',"")
         coordinate_pair = coordinate_pair.split()
         coordinate_pairs.append(coordinate_pair)
-     
-    for item in coords:
-        for i in range(0,len(coords)):
-            formatted = '{lat:'+coordinate_pairs[i][0]+' lng:'+coordinate_pairs[i][1] + '}'
+
+#### Calculate Distance between Points
+    
+
+    # for pair in coordinate_pairs:
+        
+    #     print (pair[0])
+    #     print (pair[1])
+        
+    #     if pair == coordinate_pairs[0]:
+    #         print ("Subject")
+
+    #     else:
+
+    #         pair[0] = pair[0].replace(",","")
+    #         pair[1] = pair[1].replace(",","")
+    
+            
+    #         distance = vincenty(float(pair[0]), float(pair[1])).miles
+
+    #         print(distance)
+
+    
+    distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
+
+    subject_address = coordinate_pairs[0]
+    subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
+
+    print(subject_str)
+
+    for i in range(1, len(coordinate_pairs)):
+        target_address = coordinate_pairs[i]
+        target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
+        distance = vincenty(subject_str, target_str).miles
+
+        distance_dict[target_str] = distance
+
+    #print (distance_dict)
+
+    sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])
+    sorted_pairs.insert(0,subject_str)
+    
+    #print(sorted_pairs)                                  ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST 
+
+    for item in sorted_pairs:
+
+        split_coords = item.split()
+        for i in range(0,len(sorted_pairs)):
+            formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
             if formatted not in to_pass: 
                 to_pass.append(formatted)
 
@@ -63,8 +105,7 @@ def plot(request):
         item = item.replace("'","")   
     
     new_str = new_str +']'
-    
-
+    #print (new_str)
     return render(request, 'multiple.html', {'new_str':new_str})
 
 def index(request):
@@ -72,8 +113,6 @@ def index(request):
     return render(request, 'index.html')
 
 def home(request):
-
-
 	addresslist = ['2376 Woodward Avenue, Lakewood, OH 44107']
 	return render(request, 'test.html', { 'addresslist':addresslist} )
 
