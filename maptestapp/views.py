@@ -10,7 +10,7 @@ from maptestapp.serializers import AccountSerializer
 import geocoder
 from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
-from .import views
+
 
 def plot(request):
     coords = []
@@ -38,7 +38,7 @@ def plot(request):
             coords.append(addr1)
         if addr2 != '':
             coords.append(addr2)
-        if addr3 != '':    
+        if addr3 != '':
             coords.append(addr3)
         if addr4 != '':
             coords.append(addr4)
@@ -46,7 +46,7 @@ def plot(request):
             coords.append(addr5)
         if addr6 != '':
             coords.append(addr6)
-        if addr7 != '':    
+        if addr7 != '':
             coords.append(addr7)
         if addr8 != '':
             coords.append(addr8)
@@ -62,7 +62,7 @@ def plot(request):
         coordinate_pairs.append(coordinate_pair)
 
 ####CALCULATE DISTANCE BETWEEN POINTS######
-    
+
     distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
 
     subject_address = coordinate_pairs[0]
@@ -79,20 +79,20 @@ def plot(request):
 
     sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
     sorted_pairs.insert(0,subject_str)
-    
-                                           ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST 
+
+                                           ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST
     for item in sorted_pairs:
         split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
 
         for i in range(0,len(sorted_pairs)):
             formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
-            if formatted not in to_pass: 
+            if formatted not in to_pass:
                 to_pass.append(formatted)
 
     for item in to_pass:
         new_str = new_str + item + ", "
-        item = item.replace("'","")   
-    
+        item = item.replace("'","")
+
     new_str = new_str +']'
 
     print (new_str)

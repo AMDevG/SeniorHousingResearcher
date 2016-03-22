@@ -6,14 +6,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="{%static 'css/main.css' %}">
-<body background= "{%static 'img/BPlogo.png'%}" >
+<link rel="icon" href="{%static 'img/bpfav.ico'%}" type="image/x-icon"/>
+<link rel="shortcut icon" href="{%static 'img/bpfav.ico'%}" type="image/x-icon"/>
+
+<body background= "{%static 'img/BPLogo.png'%}" >
 
 
 <div id="propBox" >
 
 <form class="w3-container" action = "/home/plot/" method="POST" id="plotForm">
 	{% csrf_token %}
-  	
+
   	<br>
 
 	<label class="w3-label">Subject Property  </label>
@@ -24,13 +27,13 @@
 
 	<label class="w3-label">Property Address  </label>
 	<input id = "propInput" type="text" name="addr2"><br><br><br>
-	
+
 	<label class="w3-label">Property Address  </label>
 	<input id = "propInput" type="text" name="addr3"><br><br><br>
-	
+
 	<label class="w3-label">Property Address  </label>
 	<input id = "propInput" type="text" name="addr4"><br><br><br>
-	
+
 	<label class="w3-label">Property Address  </label>
 	<input id = "propInput" type="text" name="addr5"><br><br><br>
 

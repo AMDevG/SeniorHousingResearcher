@@ -37,7 +37,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'easy_maps',
     'rest_framework',
     'maptestapp'
 )
@@ -104,7 +103,7 @@ USE_TZ = True
 STATIC_ROOT = ''
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.sep.join([os.path.dirname(os.path.dirname(__file__)), 'static']),
-)
+
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/blueprintmapper/BPMapper/maptestapp/static/'
 #AUTH_USER_MODEL = 'maptestapp.Account'
