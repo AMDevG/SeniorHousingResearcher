@@ -49,36 +49,16 @@ def plot(request):
         coordinate_pair = coordinate_pair.split()
         coordinate_pairs.append(coordinate_pair)
 
-#### Calculate Distance between Points
-    
-
-    # for pair in coordinate_pairs:
-        
-    #     print (pair[0])
-    #     print (pair[1])
-        
-    #     if pair == coordinate_pairs[0]:
-    #         print ("Subject")
-
-    #     else:
-
-    #         pair[0] = pair[0].replace(",","")
-    #         pair[1] = pair[1].replace(",","")
-    
-            
-    #         distance = vincenty(float(pair[0]), float(pair[1])).miles
-
-    #         print(distance)
-
+####CALCULATE DISTANCE BETWEEN POINTS######
     
     distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
 
     subject_address = coordinate_pairs[0]
     subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
 
-    print(subject_str)
+    #print(subject_str)
 
-    for i in range(1, len(coordinate_pairs)):
+    for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
         target_address = coordinate_pairs[i]
         target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
         distance = vincenty(subject_str, target_str).miles
@@ -87,14 +67,14 @@ def plot(request):
 
     #print (distance_dict)
 
-    sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])
+    sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
     sorted_pairs.insert(0,subject_str)
     
-    #print(sorted_pairs)                                  ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST 
+    #print(sorted_pairs)                                 ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST 
 
     for item in sorted_pairs:
 
-        split_coords = item.split()
+        split_coords = item.split()                     ## FORMATS FOR JAVASCRIPT
         for i in range(0,len(sorted_pairs)):
             formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
             if formatted not in to_pass: 

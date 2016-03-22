@@ -28,12 +28,11 @@
   
        	var sec = addresses[0]	
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 10,
+          zoom: 15,
           center: sec
         });
 
-      
-      
+    
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 
         for(i=0; i < addresses.length; i++){
@@ -46,10 +45,13 @@
         });	
       }
       else{
+
+        var image_select = "{%static 'img/Circle" + i + ".png' %}"
+        
          var marker = new google.maps.Marker({
           position: addresses[i],
           map: map,
-          icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+i+'|FE6256|000000'
+          icon: image_select          //'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+i+'|FE6256|000000'
         }); 
 
 
