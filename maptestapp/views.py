@@ -20,6 +20,7 @@ def plot(request):
     new_str = '['
 
     if request.method == 'POST':
+        distance_selection = request.POST.get('sortOption', None)
         subject = request.POST.get('subject', None)
         addr1 = request.POST.get('addr1', None)
         addr2 = request.POST.get('addr2', None)
@@ -30,6 +31,9 @@ def plot(request):
         addr7 = request.POST.get('addr7', None)
         addr8 = request.POST.get('addr8', None)
         addr9 = request.POST.get('addr9', None)
+
+
+        print("Selection is ", distance_selection)
 
 
         if subject != '':
@@ -53,6 +57,8 @@ def plot(request):
         if addr9 != '':
             coords.append(addr9)
 
+        #print("List is ", coords)
+
     for address in coords:
         g = geocoder.google(address)
         coordinate_pair = str(g.latlng)
@@ -61,43 +67,109 @@ def plot(request):
         coordinate_pair = coordinate_pair.split()
         coordinate_pairs.append(coordinate_pair)
 
+    #print("Coordinate pairs are ", coordinate_pairs)
+
 ####CALCULATE DISTANCE BETWEEN POINTS######
 
-    distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
+#####################################################################################################################################
+    
+    if distance_selection == "distance":
 
-    subject_address = coordinate_pairs[0]
-    subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
+        distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
 
-    print(subject_str)
+        subject_address = coordinate_pairs[0]
+        subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
 
-    for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
-        target_address = coordinate_pairs[i]
-        target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-        distance = vincenty(subject_str, target_str).miles
+        print(subject_str)
 
-        distance_dict[target_str] = distance
+        for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+            target_address = coordinate_pairs[i]
+            target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
+            distance = vincenty(subject_str, target_str).miles
 
-    sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
-    sorted_pairs.insert(0,subject_str)
+            distance_dict[target_str] = distance
 
-                                           ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST
-    for item in sorted_pairs:
-        split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
+        sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
+        sorted_pairs.insert(0,subject_str)
 
-        for i in range(0,len(sorted_pairs)):
-            formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
-            if formatted not in to_pass:
-                to_pass.append(formatted)
+                                               ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST
+        for item in sorted_pairs:
+            split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
 
-    for item in to_pass:
-        new_str = new_str + item + ", "
-        item = item.replace("'","")
+            for i in range(0,len(sorted_pairs)):
+                formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
+                if formatted not in to_pass:
+                    to_pass.append(formatted)
 
-    new_str = new_str +']'
+        for item in to_pass:
+            new_str = new_str + item + ", "
+            item = item.replace("'","")
 
-    print (new_str)
+        new_str = new_str +']'
 
-    return render(request, 'multiple.html', {'new_str':new_str})
+        print ( "New String is ", new_str)
+
+        return render(request, 'multiple.html', {'new_str':new_str})
+
+#######################################################################################################################
+
+    elif distance_selection == "order":
+
+        sorted_pairs = []
+        subject_address = coordinate_pairs[0]
+        subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
+
+        #print("Subject is ",subject_str)
+
+        sorted_pairs.append(subject_str)
+
+
+        for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+            target_address = coordinate_pairs[i]
+            target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
+            print("Target string is ", target_str)
+            print()
+            sorted_pairs.append(target_str)
+
+        #print("Sorted Pairs are ", sorted_pairs)
+
+
+        for item in sorted_pairs:
+            split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
+
+            for i in range(0,len(sorted_pairs)):
+                formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
+                if formatted not in to_pass:
+                    to_pass.append(formatted)
+
+                print("To Pass is ", to_pass)
+
+        for item in to_pass:
+            new_str = new_str + item + ", "
+            item = item.replace("'","")
+
+        new_str = new_str +']'
+
+        print("New String is ", new_str)
+
+
+        return render(request, 'multiple.html', {'new_str':new_str})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def index(request):
 
