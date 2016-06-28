@@ -31,6 +31,18 @@ def plot(request):
         addr7 = request.POST.get('addr7', None)
         addr8 = request.POST.get('addr8', None)
         addr9 = request.POST.get('addr9', None)
+        addr10 = request.POST.get('addr10', None)
+        addr11 = request.POST.get('addr11', None)
+        addr12 = request.POST.get('addr12', None)
+        addr13 = request.POST.get('addr13', None)
+        addr14 = request.POST.get('addr14', None)
+        addr15 = request.POST.get('addr15', None)
+        addr16 = request.POST.get('addr16', None)
+        addr17 = request.POST.get('addr17', None)
+        addr18 = request.POST.get('addr18', None)
+        addr19 = request.POST.get('addr19', None)
+        addr20 = request.POST.get('addr20', None)
+
 
 
         print("Selection is ", distance_selection)
@@ -56,6 +68,28 @@ def plot(request):
             coords.append(addr8)
         if addr9 != '':
             coords.append(addr9)
+        if addr10 != '':
+            coords.append(addr10)
+        if addr11 != '':
+            coords.append(addr11)
+        if addr12 != '':
+            coords.append(addr12)
+        if addr13 != '':
+            coords.append(addr13)
+        if addr14 != '':
+            coords.append(addr14)
+        if addr15 != '':
+            coords.append(addr15)
+        if addr16 != '':
+            coords.append(addr16)
+        if addr17 != '':
+            coords.append(addr17)
+        if addr18 != '':
+            coords.append(addr18)
+        if addr19 != '':
+            coords.append(addr19)
+        if addr20 != '':
+            coords.append(addr20)
 
         #print("List is ", coords)
 
@@ -72,7 +106,7 @@ def plot(request):
 ####CALCULATE DISTANCE BETWEEN POINTS######
 
 #####################################################################################################################################
-    
+
     if distance_selection == "distance":
 
         distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
@@ -85,6 +119,7 @@ def plot(request):
         for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
             target_address = coordinate_pairs[i]
             target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
+
             distance = vincenty(subject_str, target_str).miles
 
             distance_dict[target_str] = distance
