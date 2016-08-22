@@ -116,8 +116,14 @@ def plot(request):
 
         print(subject_str)
 
-        for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+        print(coordinate_pairs)
+
+        target_address = 0
+
+        for i in range(1, len(coordinate_pairs)):
+            print(i)                                         ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
             target_address = coordinate_pairs[i]
+            print(target_address)
             target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
 
             distance = vincenty(subject_str, target_str).miles
@@ -159,13 +165,18 @@ def plot(request):
         sorted_pairs.append(subject_str)
 
 
-        for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+        for i in range(0, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+            print("Coordinate pairs are: ", coordinate_pairs)
             target_address = coordinate_pairs[i]
-            target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-            print("Target string is ", target_str)
-            print()
-            sorted_pairs.append(target_str)
+            try:
+                target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
+                print("Target string is :", target_str)
+                print("i is at", i)
+                print("out of ", len(coordinate_pairs))
+                sorted_pairs.append(target_str)
 
+            except IndexError:
+                continue
         #print("Sorted Pairs are ", sorted_pairs)
 
 
