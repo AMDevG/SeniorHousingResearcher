@@ -20,6 +20,12 @@ def plot(request):
     new_str = '['
 
     if request.method == 'POST':
+
+        coords = []
+        lat_lng = []
+        coordinate_pairs = []
+        to_pass = []
+
         distance_selection = request.POST.get('sortOption', None)
         subject = request.POST.get('subject', None)
         addr1 = request.POST.get('addr1', None)
@@ -42,6 +48,16 @@ def plot(request):
         addr18 = request.POST.get('addr18', None)
         addr19 = request.POST.get('addr19', None)
         addr20 = request.POST.get('addr20', None)
+        addr21 = request.POST.get('addr21', None)
+        addr22 = request.POST.get('addr22', None)
+        addr23 = request.POST.get('addr23', None)
+        addr24 = request.POST.get('addr24', None)
+        addr25 = request.POST.get('addr25', None)
+        addr26 = request.POST.get('addr26', None)
+        addr27 = request.POST.get('addr27', None)
+        addr28 = request.POST.get('addr28', None)
+        addr29 = request.POST.get('addr29', None)
+        addr30 = request.POST.get('addr30', None)
 
 
 
@@ -90,6 +106,31 @@ def plot(request):
             coords.append(addr19)
         if addr20 != '':
             coords.append(addr20)
+        if addr21 != '':
+            coords.append(addr21)
+        if addr22 != '':
+            coords.append(addr22)
+        if addr23 != '':
+            coords.append(addr23)
+        if addr24 != '':
+            coords.append(addr24)
+        if addr25 != '':
+            coords.append(addr25)
+        if addr26 != '':
+            coords.append(addr26)
+        if addr27 != '':
+            coords.append(addr27)
+        if addr28 != '':
+            coords.append(addr28)
+        if addr29 != '':
+            coords.append(addr29)
+        if addr30 != '':
+            coords.append(addr30)
+
+
+        lat_lng = []
+        coordinate_pairs = []
+        to_pass = []
 
         #print("List is ", coords)
 
@@ -108,6 +149,7 @@ def plot(request):
 #####################################################################################################################################
 
     if distance_selection == "distance":
+
 
         distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
 
@@ -149,6 +191,10 @@ def plot(request):
         new_str = new_str +']'
 
         print ( "New String is ", new_str)
+
+        lat_lng = []
+        coordinate_pairs = []
+        to_pass = []
 
         return render(request, 'multiple.html', {'new_str':new_str})
 
@@ -197,22 +243,12 @@ def plot(request):
         new_str = new_str +']'
 
         print("New String is ", new_str)
+        lat_lng = []
+        coordinate_pairs = []
+        to_pass = []
 
 
         return render(request, 'multiple.html', {'new_str':new_str})
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
