@@ -11,6 +11,8 @@ import geocoder
 from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 
+from time import sleep
+
 
 def plot(request):
     coords = []
@@ -57,10 +59,7 @@ def plot(request):
         addr27 = request.POST.get('addr27', None)
         addr28 = request.POST.get('addr28', None)
         addr29 = request.POST.get('addr29', None)
-        addr30 = request.POST.get('addr30', None)
-
-
-
+        
 
         if subject != '':
             coords.append(subject)
@@ -119,31 +118,26 @@ def plot(request):
         if addr27 != '':
             coords.append(addr27)
         if addr28 != '':
+            print("address 28 : ", addr28)
             coords.append(addr28)
         if addr29 != '':
-            coords.append(addr29)
+            coords.append(addr28)
 
 
-        print("Here are the coords",coords)
-        print("There are : ", len(coords))
-
-        print(coords[10])
-        
-        for item in coords:
-            print(item)
-
-        lat_lng = []
-        coordinate_pairs = []
-        to_pass = []
 
         #print("List is ", coords)
-
+    num = 0
     for address in coords:
+        print("Address is being coded: ", num)
         g = geocoder.google(address)
+        sleep(0.201)
+        print("Result: ,", g)
+        num+=1
         coordinate_pair = str(g.latlng)
         coordinate_pair = coordinate_pair.replace('[',"")
         coordinate_pair = coordinate_pair.replace(']',"")
         coordinate_pair = coordinate_pair.split()
+        #print("coordinate_pair: ",coordinate_pair)
         coordinate_pairs.append(coordinate_pair)
 
     #print("Coordinate pairs are ", coordinate_pairs)
@@ -205,13 +199,15 @@ def plot(request):
         subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
         sorted_pairs.append(subject_str)
 
-        for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+        for i in range(1, len(coordinate_pairs)): 
+            print(coordinate_pairs[i])          ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
             
             target_address = coordinate_pairs[i]
             # try:
             target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-            print("i is at", i)
-            print("out of ", len(coordinate_pairs))
+            # print("i is at", i)
+            # print("Current target is ", target_address)
+            # print("out of ", len(coordinate_pairs))
             sorted_pairs.append(target_str)
 
             # except IndexError:
