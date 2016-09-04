@@ -10,7 +10,6 @@ from maptestapp.serializers import AccountSerializer
 import geocoder
 from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
-
 from time import sleep
 
 
@@ -29,6 +28,8 @@ def plot(request):
         to_pass = []
 
         distance_selection = request.POST.get('sortOption', None)
+
+        print("Selection Chosen: ", distance_selection)
         subject = request.POST.get('subject', None)
         addr1 = request.POST.get('addr1', None)
         addr2 = request.POST.get('addr2', None)
@@ -121,7 +122,8 @@ def plot(request):
             print("address 28 : ", addr28)
             coords.append(addr28)
         if addr29 != '':
-            coords.append(addr28)
+            coords.append(addr29)
+        
 
 
 
@@ -130,7 +132,7 @@ def plot(request):
     for address in coords:
         print("Address is being coded: ", num)
         g = geocoder.google(address)
-        sleep(0.201)
+        sleep(0.2)
         print("Result: ,", g)
         num+=1
         coordinate_pair = str(g.latlng)
