@@ -1,7 +1,3 @@
-# from django.shortcuts import render
-# from django.http import HttpResponse
-# from .models import AccountManager, Account
-# # Create your views here.
 from django.shortcuts import render
 from rest_framework import permissions, viewsets,views
 from maptestapp.models import Account
@@ -21,15 +17,12 @@ def plot(request):
     new_str = '['
 
     if request.method == 'POST':
-
         coords = []
         lat_lng = []
         coordinate_pairs = []
         to_pass = []
 
         distance_selection = request.POST.get('sortOption', None)
-
-        print("Selection Chosen: ", distance_selection)
         subject = request.POST.get('subject', None)
         addr1 = request.POST.get('addr1', None)
         addr2 = request.POST.get('addr2', None)
@@ -119,40 +112,26 @@ def plot(request):
         if addr27 != '':
             coords.append(addr27)
         if addr28 != '':
-            print("address 28 : ", addr28)
             coords.append(addr28)
         if addr29 != '':
             coords.append(addr29)
-        
 
-
-
-        #print("List is ", coords)
-    num = 0
     for address in coords:
-        print("Address is being coded: ", num)
         g = geocoder.google(address)
         sleep(0.2)
-        print("Result: ,", g)
-        num+=1
+      
         coordinate_pair = str(g.latlng)
         coordinate_pair = coordinate_pair.replace('[',"")
         coordinate_pair = coordinate_pair.replace(']',"")
         coordinate_pair = coordinate_pair.split()
-        #print("coordinate_pair: ",coordinate_pair)
         coordinate_pairs.append(coordinate_pair)
-
-    #print("Coordinate pairs are ", coordinate_pairs)
 
 ####CALCULATE DISTANCE BETWEEN POINTS######
 
 #####################################################################################################################################
 
     if distance_selection == "distance":
-
-
         distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
-
         subject_address = coordinate_pairs[0]
         subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
         target_address = 0
@@ -160,11 +139,8 @@ def plot(request):
         for i in range(1, len(coordinate_pairs)):
                                                      ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
             target_address = coordinate_pairs[i]
-            
             target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-
             distance = vincenty(subject_str, target_str).miles
-
             distance_dict[target_str] = distance
 
         sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
@@ -184,8 +160,6 @@ def plot(request):
             item = item.replace("'","")
 
         new_str = new_str +']'
-
-
         lat_lng = []
         coordinate_pairs = []
         to_pass = []
@@ -201,21 +175,10 @@ def plot(request):
         subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
         sorted_pairs.append(subject_str)
 
-        for i in range(1, len(coordinate_pairs)): 
-            print(coordinate_pairs[i])          ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
-            
+        for i in range(1, len(coordinate_pairs)): ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
             target_address = coordinate_pairs[i]
-            # try:
             target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-            # print("i is at", i)
-            # print("Current target is ", target_address)
-            # print("out of ", len(coordinate_pairs))
             sorted_pairs.append(target_str)
-
-            # except IndexError:
-            #     continue
-        #print("Sorted Pairs are ", sorted_pairs)
-
 
         for item in sorted_pairs:
             split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
@@ -225,8 +188,6 @@ def plot(request):
                 if formatted not in to_pass:
                     to_pass.append(formatted)
 
-            
-
         for item in to_pass:
             new_str = new_str + item + ", "
             item = item.replace("'","")
@@ -235,7 +196,6 @@ def plot(request):
         lat_lng = []
         coordinate_pairs = []
         to_pass = []
-
 
         return render(request, 'multiple.html', {'new_str':new_str})
 
