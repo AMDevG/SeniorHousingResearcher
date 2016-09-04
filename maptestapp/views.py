@@ -61,8 +61,6 @@ def plot(request):
 
 
 
-        print("Selection is ", distance_selection)
-
 
         if subject != '':
             coords.append(subject)
@@ -124,9 +122,15 @@ def plot(request):
             coords.append(addr28)
         if addr29 != '':
             coords.append(addr29)
-        if addr30 != '':
-            coords.append(addr30)
 
+
+        print("Here are the coords",coords)
+        print("There are : ", len(coords))
+
+        print(coords[10])
+        
+        for item in coords:
+            print(item)
 
         lat_lng = []
         coordinate_pairs = []
@@ -155,17 +159,12 @@ def plot(request):
 
         subject_address = coordinate_pairs[0]
         subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
-
-        print(subject_str)
-
-        print(coordinate_pairs)
-
         target_address = 0
 
         for i in range(1, len(coordinate_pairs)):
-            print(i)                                         ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+                                                     ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
             target_address = coordinate_pairs[i]
-            print(target_address)
+            
             target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
 
             distance = vincenty(subject_str, target_str).miles
@@ -190,7 +189,6 @@ def plot(request):
 
         new_str = new_str +']'
 
-        print ( "New String is ", new_str)
 
         lat_lng = []
         coordinate_pairs = []
@@ -205,24 +203,19 @@ def plot(request):
         sorted_pairs = []
         subject_address = coordinate_pairs[0]
         subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
-
-        #print("Subject is ",subject_str)
-
         sorted_pairs.append(subject_str)
 
-
-        for i in range(0, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
-            print("Coordinate pairs are: ", coordinate_pairs)
+        for i in range(1, len(coordinate_pairs)):           ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
+            
             target_address = coordinate_pairs[i]
-            try:
-                target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-                print("Target string is :", target_str)
-                print("i is at", i)
-                print("out of ", len(coordinate_pairs))
-                sorted_pairs.append(target_str)
+            # try:
+            target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
+            print("i is at", i)
+            print("out of ", len(coordinate_pairs))
+            sorted_pairs.append(target_str)
 
-            except IndexError:
-                continue
+            # except IndexError:
+            #     continue
         #print("Sorted Pairs are ", sorted_pairs)
 
 
@@ -234,15 +227,13 @@ def plot(request):
                 if formatted not in to_pass:
                     to_pass.append(formatted)
 
-                print("To Pass is ", to_pass)
+            
 
         for item in to_pass:
             new_str = new_str + item + ", "
             item = item.replace("'","")
 
         new_str = new_str +']'
-
-        print("New String is ", new_str)
         lat_lng = []
         coordinate_pairs = []
         to_pass = []
