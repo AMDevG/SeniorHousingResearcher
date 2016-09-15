@@ -8,8 +8,11 @@ from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from time import sleep
 
+import json
+import requests
+
 import simplejson
-import urllib.request as urllib2
+#import urllib.request as urllib2
 
 
 def plot(request):
@@ -56,7 +59,7 @@ def plot(request):
         addr27 = request.POST.get('addr27', None)
         addr28 = request.POST.get('addr28', None)
         addr29 = request.POST.get('addr29', None)
-        
+
 
         if subject != '':
             coords.append(subject)
@@ -124,29 +127,34 @@ def plot(request):
     for address in coords:
         address = address.strip()
         address = address.replace(" ","")
-    
-        #url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+subject_address+"&destinations="+temp_address+"&key=AIzaSyABAGhtae7h91pf24nfyZ6eFiPThWW3W4M"
-        url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key"
+
+
+        url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyABF2rlCMvj-SdYYwsvKq3Wv2U0gPbGsQw"
         sleep(0.2)
 
-    
-        result= simplejson.load(urllib2.urlopen(url))
-        
-        coded_address = result['results'][0]['geometry']['location']
+
+        result = requests.get(url)
+
+        print(result)
+
+        data = json.loads(result.text)
+        print(data)
+
+        coded_address = data['results'][0]['geometry']['location']
 
         coded_lat = str(coded_address['lat']) +","
         coded_lng = str(coded_address['lng'])
         tmp_coord_list.append(coded_lat)
         tmp_coord_list.append(coded_lng)
 
-    
+
         coordinate_pairs.append(tmp_coord_list)
-        
+
         print(coordinate_pairs)
 
         tmp_coord_list = []
-    
-    
+
+
 
 ####CALCULATE DISTANCE BETWEEN POINTS######
 
