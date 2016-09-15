@@ -8,6 +8,9 @@ from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from time import sleep
 
+import simplejson
+import urllib.request as urllib2
+
 
 def plot(request):
     coords = []
@@ -116,15 +119,34 @@ def plot(request):
         if addr29 != '':
             coords.append(addr29)
 
+    tmp_coord_list = []
+
     for address in coords:
-        g = geocoder.google(address)
-        sleep(0.4)
-      
-        coordinate_pair = str(g.latlng)
-        coordinate_pair = coordinate_pair.replace('[',"")
-        coordinate_pair = coordinate_pair.replace(']',"")
-        coordinate_pair = coordinate_pair.split()
-        coordinate_pairs.append(coordinate_pair)
+        address = address.strip()
+        address = address.replace(" ","")
+    
+        #url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+subject_address+"&destinations="+temp_address+"&key=AIzaSyABAGhtae7h91pf24nfyZ6eFiPThWW3W4M"
+        url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key"
+        sleep(0.2)
+
+    
+        result= simplejson.load(urllib2.urlopen(url))
+        
+        coded_address = result['results'][0]['geometry']['location']
+
+        coded_lat = str(coded_address['lat']) +","
+        coded_lng = str(coded_address['lng'])
+        tmp_coord_list.append(coded_lat)
+        tmp_coord_list.append(coded_lng)
+
+    
+        coordinate_pairs.append(tmp_coord_list)
+        
+        print(coordinate_pairs)
+
+        tmp_coord_list = []
+    
+    
 
 ####CALCULATE DISTANCE BETWEEN POINTS######
 
@@ -164,6 +186,8 @@ def plot(request):
         coordinate_pairs = []
         to_pass = []
 
+        print(new_str)
+
         return render(request, 'multiple.html', {'new_str':new_str})
 
 #######################################################################################################################
@@ -197,8 +221,9 @@ def plot(request):
         coordinate_pairs = []
         to_pass = []
 
-        return render(request, 'multiple.html', {'new_str':new_str})
+        print("New String is :", new_str)
 
+        return render(request, 'multiple.html', {'new_str':new_str})
 
 
 
