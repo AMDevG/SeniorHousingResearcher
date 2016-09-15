@@ -118,7 +118,7 @@ def plot(request):
 
     for address in coords:
         g = geocoder.google(address)
-        sleep(0.2)
+        sleep(0.4)
       
         coordinate_pair = str(g.latlng)
         coordinate_pair = coordinate_pair.replace('[',"")
