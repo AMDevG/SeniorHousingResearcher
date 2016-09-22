@@ -6,9 +6,9 @@
 <form action = "{% url 'findComps:compsearch' %}" method="POST" id="searchForm" style="width:800px; margin:0 auto;">
 								{% csrf_token %}
 
-
-								  <input id = "inputBoxText" style="width:800px; margin:0 auto; text-align:center;" type="text" name="zip" placeholder="Enter your zipcode to get started.."><br>
-								  <input id = "inputBoxText" style="width:800px; margin:0 auto; text-align:center;" type="text" name="radius" placeholder="Enter desired search radius..">
+								  <input style="width:800px; margin:0 auto; text-align:center;" type="text" name="subj_addr" placeholder="Enter the full address of subject property..">
+								  <input style="width:800px; margin:0 auto; text-align:center;" type="text" name="zip" placeholder="Enter your zipcode to get started.."><br>
+								  <input style="width:800px; margin:0 auto; text-align:center;" type="text" name="radius" placeholder="Enter desired search radius..">
 								  <input style="width:800px; margin:0 auto;" type="submit" class="button scrolly" value="Find Care" >
                         </div>
                        </form>
