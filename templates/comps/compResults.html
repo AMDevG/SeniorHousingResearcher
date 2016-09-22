@@ -1,0 +1,17 @@
+<html>
+{% load staticfiles %}
+<body>
+
+
+
+{% for key, value in facility_information.items %}
+	<p> {{key}}</p>
+
+	<a style="color:black">{{value}}</a>
+
+	{%endfor%}
+
+
+
+</body>
+</html>
