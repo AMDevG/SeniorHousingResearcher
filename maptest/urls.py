@@ -16,18 +16,15 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework import routers
-
 from maptestapp.views import AccountViewSet
-
 
 router = routers.SimpleRouter()
 router.register(r'accounts', AccountViewSet)
 
-
-
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^home/', include('maptestapp.urls', namespace = "maptestapp")),
-    url(r'^api/v1/', include(router.urls)),
-    url(r'^$', AccountViewSet.as_view({'get':'list'}), name='index')
+    url(r'^', include('maptestapp.urls', namespace = "maptestapp")),
+    url(r'^findcomps/', include('findComps.urls', namespace="findComps"))
+    #url(r'^api/v1/', include(router.urls)),
+    #url(r'^$', AccountViewSet.as_view({'get':'list'}), name='index')
 ]

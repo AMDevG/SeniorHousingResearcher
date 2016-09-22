@@ -10,7 +10,6 @@ from time import sleep
 
 import json
 import requests
-
 import simplejson
 #import urllib.request as urllib2
 
@@ -196,7 +195,7 @@ def plot(request):
 
         print(new_str)
 
-        return render(request, 'multiple.html', {'new_str':new_str})
+        return render(request, 'mapping/multiple.html', {'new_str':new_str})
 
 #######################################################################################################################
 
@@ -231,17 +230,17 @@ def plot(request):
 
         print("New String is :", new_str)
 
-        return render(request, 'multiple.html', {'new_str':new_str})
+        return render(request, 'mapping/multiple.html', {'new_str':new_str})
 
 
 
 def index(request):
 
-    return render(request, 'index.html')
+    return render(request, 'mapping/index.html')
 
 def signup(request):
 
-	return render(request, 'signup.html')
+	return render(request, 'mapping/signup.html')
 
 def success(request):
 
@@ -251,7 +250,7 @@ def success(request):
 		email_list = [email_addr]
 		Account.objects.create_user(email_addr, username=user_name)
 
-	return render(request, 'success.html', {'email_list':email_list})
+	return render(request, 'mapping/success.html', {'email_list':email_list})
 
 
 class AccountViewSet(viewsets.ModelViewSet):

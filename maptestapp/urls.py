@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^signup/$', views.signup, name="signup"),
     url(r'^success/$', views.success, name="success"),
     url(r'^plot/$', views.plot, name="plot"),
-    url(r'^$', views.index, name="index")
+    url(r'^home/$', views.index, name="index"),
 
 
 ]
