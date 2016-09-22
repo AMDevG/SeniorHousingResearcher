@@ -4,12 +4,18 @@
 
 
 
-{% for key, value in facility_information.items %}
+{% for key, facility in facility_information.items %}
 	<p> {{key}}</p>
 
-	<a style="color:black">{{value}}</a>
+
+	{% for key, value in facility.items %}
+
+		<li>{{key}} -- {{value}}</li>
 
 	{%endfor%}
+
+
+{%endfor%}
 
 
 
