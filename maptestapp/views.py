@@ -245,7 +245,6 @@ def plot(request):
 
         #print("New String is :", new_str)
 
-        print("error message being passed is ", msg_str)
         return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_list':msg_list})
 
 

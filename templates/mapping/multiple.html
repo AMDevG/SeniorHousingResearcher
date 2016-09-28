@@ -3,12 +3,11 @@
 <!DOCTYPE html>
 
 <html>
-{% load staticfiles %}
+{% load static %}
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Blueprint Mapper</title>
-    <script src="{%static 'js/errorNotify.js' %}"></script>
     <style>
             html, body {
               height: 100%;
@@ -19,37 +18,28 @@
               height: 100%;
             }
     </style>
-
-  
-
   </head>
-
-
 
   <body>
     
-
+<div>
     {% for m in msg_list %}
       <li>{{m}}</li>
     {% endfor %}
 
+</div>
 
 
-    <div id="map"></div>
-    <script>
-
-
+  <div id="map"></div>
+       <script>
       function initMap() {
         var addresses = {{new_str}}
-
         var sec = addresses[0]
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
           center: sec
         });
-
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-
         for(i=0; i < addresses.length; i++){
             if(i==0){
                 var marker = new google.maps.Marker({
@@ -57,18 +47,15 @@
                   map: map,
                   icon: "{%static 'img/BPMarker.PNG' %}"});
             }
-
             else{
              //var image_select = "{%static 'img/Circle" + i + ".png' %}"
              var image_select = "{%static 'img/mark" + i + ".png' %}"
-
               var marker = new google.maps.Marker({
               position: addresses[i],
               map: map,
               icon: image_select });
             }
        }
-
 }
   </script>
 
