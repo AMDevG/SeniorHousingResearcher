@@ -7,6 +7,7 @@ import geocoder
 from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from time import sleep
+import bond
 
 import json
 import requests
@@ -139,19 +140,25 @@ def plot(request):
         data = json.loads(result.text)
         print(data)
 
-        coded_address = data['results'][0]['geometry']['location']
+        try:
 
-        coded_lat = str(coded_address['lat']) +","
-        coded_lng = str(coded_address['lng'])
-        tmp_coord_list.append(coded_lat)
-        tmp_coord_list.append(coded_lng)
+            coded_address = data['results'][0]['geometry']['location']
+
+            coded_lat = str(coded_address['lat']) +","
+            coded_lng = str(coded_address['lng'])
+            tmp_coord_list.append(coded_lat)
+            tmp_coord_list.append(coded_lng)
 
 
-        coordinate_pairs.append(tmp_coord_list)
+            coordinate_pairs.append(tmp_coord_list)
 
-        print(coordinate_pairs)
+            print(coordinate_pairs)
 
-        tmp_coord_list = []
+            tmp_coord_list = []
+
+        except:
+            
+            continue
 
 
 
