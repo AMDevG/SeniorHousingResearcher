@@ -7,7 +7,7 @@ import requests
 import simplejson
 
 def find(request):
-	return render(request, 'comps/findSNFs.html' )
+	return render(request, 'comps/findSNFS.html' )
 
 def getDistance(subject_address, temp_address):
 	try:
@@ -22,7 +22,7 @@ def getDistance(subject_address, temp_address):
 
 def compsearch(request):
 
-	
+
 
 	counter = 0
 	facility_information = {}
@@ -39,7 +39,7 @@ def compsearch(request):
 		for zipcode in zips:
 			addition = Providerinfo.objects.all().filter(zip=zipcode)	# returns QuerySet Object
 			comp_objects.append(addition)
-	
+
 	while counter != len(comp_objects):				##FLATTENS INTO STRAIGHT LIST
 		item = comp_objects[counter]
 		for i in item:
@@ -48,7 +48,7 @@ def compsearch(request):
 
 	for item in flat_objects:
 		facility_information[item.provname] = {}	## Creates initial dictionary, key is facil name: holds another dic with data
-		
+
 		clean_provname = item.provname
 		clean_comp_address = item.address
 		clean_comp_city = item.city
@@ -77,6 +77,6 @@ def compsearch(request):
 		facility_information[item.provname]['bedcert'] = clean_comp_bedcert
 		facility_information[item.provname]['ownertype'] = clean_comp_ownertype
 		facility_information[item.provname]['distance'] = distance_from_subject
-		#facility_information[item.provname]['ownername'] = clean_comp_ownername   ####NEED TO MIGRATE OVER FROM OTHER TABLE 
+		#facility_information[item.provname]['ownername'] = clean_comp_ownername   ####NEED TO MIGRATE OVER FROM OTHER TABLE
 
 	return render(request, 'comps/compResults.html', {'facility_information': facility_information})
