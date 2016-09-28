@@ -7,7 +7,7 @@ import geocoder
 from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from time import sleep
-import bond
+
 
 import json
 import requests
@@ -19,7 +19,7 @@ from django.contrib import messages
 
 
 def plot(request):
-    msg_str = ''
+    msg_list = []
     coords = []
     lat_lng = []
     coordinate_pairs = []
@@ -164,6 +164,8 @@ def plot(request):
 
             msg_str = "Sorry! There was an error geocoding:  " + address 
 
+            msg_list.append(msg_str)
+
             continue
 
 
@@ -244,7 +246,7 @@ def plot(request):
         #print("New String is :", new_str)
 
         print("error message being passed is ", msg_str)
-        return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_str':msg_str})
+        return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_list':msg_list})
 
 
 

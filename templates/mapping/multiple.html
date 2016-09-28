@@ -29,9 +29,9 @@
   <body>
     
 
-    {% if msg_str %}
-      <li>{{msg_str}}</li>
-    {% endif %}
+    {% for m in msg_list %}
+      <li>{{m}}</li>
+    {% endfor %}
 
 
 
