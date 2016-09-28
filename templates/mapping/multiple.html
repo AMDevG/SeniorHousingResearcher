@@ -3,11 +3,12 @@
 <!DOCTYPE html>
 
 <html>
-{% load static %}
+{% load staticfiles %}
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Blueprint Mapper</title>
+    <script src="{%static 'js/errorNotify.js' %}"></script>
     <style>
             html, body {
               height: 100%;
@@ -18,11 +19,22 @@
               height: 100%;
             }
     </style>
+
+  
+
   </head>
 
 
 
   <body>
+    
+
+    {% if msg_str %}
+      <li>{{msg_str}}</li>
+    {% endif %}
+
+
+
     <div id="map"></div>
     <script>
 

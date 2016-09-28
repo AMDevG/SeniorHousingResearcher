@@ -12,10 +12,14 @@ import bond
 import json
 import requests
 import simplejson
+
+from django.contrib import messages
+
 #import urllib.request as urllib2
 
 
 def plot(request):
+    msg_str = ''
     coords = []
     lat_lng = []
     coordinate_pairs = []
@@ -135,10 +139,10 @@ def plot(request):
 
         result = requests.get(url)
 
-        print(result)
+        #print(result)
 
         data = json.loads(result.text)
-        print(data)
+        #print(data)
 
         try:
 
@@ -157,7 +161,9 @@ def plot(request):
             tmp_coord_list = []
 
         except:
-            
+
+            msg_str = "Sorry! There was an error geocoding:  " + address 
+
             continue
 
 
@@ -200,7 +206,7 @@ def plot(request):
         coordinate_pairs = []
         to_pass = []
 
-        print(new_str)
+        #print(new_str)
 
         return render(request, 'mapping/multiple.html', {'new_str':new_str})
 
@@ -235,9 +241,10 @@ def plot(request):
         coordinate_pairs = []
         to_pass = []
 
-        print("New String is :", new_str)
+        #print("New String is :", new_str)
 
-        return render(request, 'mapping/multiple.html', {'new_str':new_str})
+        print("error message being passed is ", msg_str)
+        return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_str':msg_str})
 
 
 
