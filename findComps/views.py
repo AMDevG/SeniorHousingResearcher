@@ -38,10 +38,10 @@ def compsearch(request):
 		zipcode = request.POST.get('zip', None)
 		radius = request.POST.get('radius', None)
 		zips = getNearbyZips(zipcode, radius)  #Collects zipcodes in radius
-		facility_information = search_by_zipcode(zips) #returns dictionary of all facilities' info with matching zips
+		facility_information = search_by_zipcode(zips, subject_address) #returns dictionary of all facilities' info with matching zips
 		write_excel_file(facility_information) #Creates Excel workbook containing data
 
-		file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market.xlsx" #need to change for server
+		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market.xlsx"
 
 		if os.path.exists(file_path):		#Creates forced download
 			with open(file_path, 'rb') as fh:
@@ -50,9 +50,9 @@ def compsearch(request):
 				return response
 		else:
 		    raise Http404
-	#return render(request, 'comps/compResults.html', {'facility_information': facility_information})
+	return render(request, 'comps/compResults.html', {'facility_information': facility_information})
 
-def search_by_zipcode(zipcodes):  
+def search_by_zipcode(zipcodes, subject_address):
  #Accepts array of zipcodes as argument, returns dictionary of nursing home info for homes in those zipcodes
  	facility_information = {}
  	for target in zipcodes:
@@ -65,7 +65,7 @@ def search_by_zipcode(zipcodes):
  	for lst in returned_data:
  		for i in range(0,len(lst)):
  			data = lst[i]
- 		
+
  		prov_name = data["provider_name"]
  		facility_information[prov_name] = {}
 
@@ -83,11 +83,16 @@ def search_by_zipcode(zipcodes):
  		changed_ownership_TTM = data["provider_changed_ownership_in_last_12_months"]
  		number_of_penalties = data["total_number_of_penalties"]
 
- 		facility_information[prov_name]['provider_name'] = data["provider_name"]
+ 		facility_information[prov_name]['provider_name'] = data["provider_name"].lower().title()
  		facility_information[prov_name]['provider_address'] = data["provider_address"]
- 		facility_information[prov_name]['provider_city'] = data["provider_city"]
+ 		facility_information[prov_name]['provider_city'] = data["provider_city"].lower().title()
  		facility_information[prov_name]['provider_state'] = data["provider_state"]
  		facility_information[prov_name]['provider_zip_code'] = data["provider_zip_code"]
+
+ 		formatted_address = data["provider_address"] + data["provider_city"] + data["provider_state"] + data["provider_zip_code"]
+ 		distance = getDistance(subject_address, formatted_address)
+ 		facility_information[prov_name]['distance'] = distance
+
  		facility_information[prov_name]['continuing_care_retirement_community'] = data['continuing_care_retirement_community']
  		facility_information[prov_name]['provider_resides_in_hospital'] = data['provider_resides_in_hospital']
  		facility_information[prov_name]['CMS_rating'] = overall_rating
@@ -104,9 +109,9 @@ def write_excel_file(facility_information):
 
 	col_counter = 2
 	row_counter = 2
-	target_wb = xl.load_workbook("C:\\Users\\John Berry\\Desktop\\Comp Tables\\compTemplate.xlsx")  #Need to change for server
+	target_wb = xl.load_workbook("/home/blueprintmapper/BPMapper/findComps/Comp Tables/compTemplate.xlsx")  #Need to change for server
 	target_ws = target_wb["Competitive Market"]
-	
+
 	for key in facility_information:
 		target_ws.cell(row = row_counter, column = 2).value = facility_information[key]['provider_name']
 		target_ws.cell(row = row_counter, column = 3).value = facility_information[key]['provider_address']
@@ -116,7 +121,7 @@ def write_excel_file(facility_information):
 		target_ws.cell(row = row_counter, column = 7).value = facility_information[key]['phone_number']
 		target_ws.cell(row = row_counter, column = 8).value = "SNF"
 		target_ws.cell(row = row_counter, column = 9).value = facility_information[key]['total_beds']
-		target_ws.cell(row = row_counter, column = 10).value = "-"												#Distance parameter need to implement the Calculator
+		target_ws.cell(row = row_counter, column = 10).value = facility_information[key]['distance']		#Distance parameter need to implement the Calculator
 		target_ws.cell(row = row_counter, column = 11).value = facility_information[key]['sff_facility']
 		target_ws.cell(row = row_counter, column = 12).value = facility_information[key]['occupancy']
 		target_ws.cell(row = row_counter, column = 13).value = facility_information[key]['continuing_care_retirement_community']
@@ -128,6 +133,6 @@ def write_excel_file(facility_information):
 		row_counter += 1
 
 	workbook_name = "Competitive Market.xlsx"
-	target_wb.save("C:\\Users\\John Berry\\Desktop\\Comp Tables\\"+workbook_name) ## Need to update to server
-    
+	target_wb.save("/home/blueprintmapper/BPMapper/findComps/Comp Tables/"+workbook_name) ## Need to update to server
+
 

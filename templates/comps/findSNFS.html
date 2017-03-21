@@ -1,6 +1,13 @@
 <html>
-<body>
-<h1> COMP FINDER </h1>
+{%load staticfiles%}
+<!DOCTYPE html>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{%static 'css/comp.css' %}">
+
+
+<body bgcolor="#375472">
+<h1 class="header1"> COMP FINDER </h1>
 
 
 <form action = "{% url 'findComps:compsearch' %}" method="POST" id="searchForm" style="width:800px; margin:0 auto;">
@@ -15,4 +22,6 @@
 
 
 </body>
+
+
 </html>
