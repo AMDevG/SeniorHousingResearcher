@@ -1,10 +1,18 @@
+import os
+import openpyxl as xl
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment
+
 from django.shortcuts import render
 from .zipcodeSearch import getNearbyZips
 from .models import Providerinfo
+from django.http import HttpResponse
 
-import json
-import requests
+import json, requests
 import simplejson
+
+returned_data = []
 
 def find(request):
 	return render(request, 'comps/findSNFS.html' )
@@ -21,11 +29,7 @@ def getDistance(subject_address, temp_address):
 		return None
 
 def compsearch(request):
-
-
-
 	counter = 0
-	facility_information = {}
 	comp_objects =[]
 	flat_objects = []
 
@@ -33,50 +37,97 @@ def compsearch(request):
 		subject_address = request.POST.get('subj_addr', None)
 		zipcode = request.POST.get('zip', None)
 		radius = request.POST.get('radius', None)
+		zips = getNearbyZips(zipcode, radius)  #Collects zipcodes in radius
+		facility_information = search_by_zipcode(zips) #returns dictionary of all facilities' info with matching zips
+		write_excel_file(facility_information) #Creates Excel workbook containing data
 
-		zips = getNearbyZips(zipcode, radius)
+		file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market.xlsx" #need to change for server
 
-		for zipcode in zips:
-			addition = Providerinfo.objects.all().filter(zip=zipcode)	# returns QuerySet Object
-			comp_objects.append(addition)
+		if os.path.exists(file_path):		#Creates forced download
+			with open(file_path, 'rb') as fh:
+				response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+				response['Content-Disposition'] = 'inline; filename=' + "Competitive Market.xlsx"
+				return response
+		else:
+		    raise Http404
+	#return render(request, 'comps/compResults.html', {'facility_information': facility_information})
 
-	while counter != len(comp_objects):				##FLATTENS INTO STRAIGHT LIST
-		item = comp_objects[counter]
-		for i in item:
-			flat_objects.append(i)
-		counter+=1
+def search_by_zipcode(zipcodes):  
+ #Accepts array of zipcodes as argument, returns dictionary of nursing home info for homes in those zipcodes
+ 	facility_information = {}
+ 	for target in zipcodes:
+ 		base_url = "https://data.medicare.gov/resource/b27b-2uc7.json?provider_zip_code="
+ 		base_url = base_url + target
+ 		r = requests.get(base_url)
+ 		result = json.loads(r.text)
+ 		returned_data.append(result)
 
-	for item in flat_objects:
-		facility_information[item.provname] = {}	## Creates initial dictionary, key is facil name: holds another dic with data
+ 	for lst in returned_data:
+ 		for i in range(0,len(lst)):
+ 			data = lst[i]
+ 		
+ 		prov_name = data["provider_name"]
+ 		facility_information[prov_name] = {}
 
-		clean_provname = item.provname
-		clean_comp_address = item.address
-		clean_comp_city = item.city
-		clean_comp_state = item.state
-		clean_comp_zip = item.zip
-		clean_comp_phone = item.phone
-		clean_comp_bedcert = item.bedcert
-		clean_comp_ownertype = item.ownership
-		#clean_comp_ownername = item.owner_name
+ 		total_residents = float(data["number_of_residents_in_certified_beds"])
+ 		total_beds = float(data["number_of_certified_beds"])
+ 		reported_occ = total_residents/total_beds
 
-		subject_address = subject_address.strip().replace(" ","")
+ 		try:
+ 			overall_rating = data["overall_rating"]
+ 		except:
+ 			pass
 
-		full_address = clean_comp_address + clean_comp_city + clean_comp_state + clean_comp_zip
-		full_address = full_address.strip().replace(" ","")
+ 		phone_number = data["provider_phone_number"]
+ 		sff_facility = data["special_focus_facility"]
+ 		changed_ownership_TTM = data["provider_changed_ownership_in_last_12_months"]
+ 		number_of_penalties = data["total_number_of_penalties"]
 
+ 		facility_information[prov_name]['provider_name'] = data["provider_name"]
+ 		facility_information[prov_name]['provider_address'] = data["provider_address"]
+ 		facility_information[prov_name]['provider_city'] = data["provider_city"]
+ 		facility_information[prov_name]['provider_state'] = data["provider_state"]
+ 		facility_information[prov_name]['provider_zip_code'] = data["provider_zip_code"]
+ 		facility_information[prov_name]['continuing_care_retirement_community'] = data['continuing_care_retirement_community']
+ 		facility_information[prov_name]['provider_resides_in_hospital'] = data['provider_resides_in_hospital']
+ 		facility_information[prov_name]['CMS_rating'] = overall_rating
+ 		facility_information[prov_name]['occupancy'] = reported_occ
+ 		facility_information[prov_name]['total_beds'] = total_beds
+ 		facility_information[prov_name]['phone_number'] = phone_number
+ 		facility_information[prov_name]['sff_facility'] = sff_facility
+ 		facility_information[prov_name]['changed_ownership_TTM'] = changed_ownership_TTM
+ 		facility_information[prov_name]['number_of_penalties'] = number_of_penalties
 
-		distance_from_subject = getDistance(subject_address, full_address)
+ 	return facility_information
 
-		print("Calculated Distance is: ", distance_from_subject)
+def write_excel_file(facility_information):
 
-		facility_information[item.provname]['address'] = clean_comp_address
-		facility_information[item.provname]['city'] = clean_comp_city
-		facility_information[item.provname]['state'] = clean_comp_state
-		facility_information[item.provname]['zip'] = clean_comp_zip
-		facility_information[item.provname]['phone'] = clean_comp_phone
-		facility_information[item.provname]['bedcert'] = clean_comp_bedcert
-		facility_information[item.provname]['ownertype'] = clean_comp_ownertype
-		facility_information[item.provname]['distance'] = distance_from_subject
-		#facility_information[item.provname]['ownername'] = clean_comp_ownername   ####NEED TO MIGRATE OVER FROM OTHER TABLE
+	col_counter = 2
+	row_counter = 2
+	target_wb = xl.load_workbook("C:\\Users\\John Berry\\Desktop\\Comp Tables\\compTemplate.xlsx")  #Need to change for server
+	target_ws = target_wb["Competitive Market"]
+	
+	for key in facility_information:
+		target_ws.cell(row = row_counter, column = 2).value = facility_information[key]['provider_name']
+		target_ws.cell(row = row_counter, column = 3).value = facility_information[key]['provider_address']
+		target_ws.cell(row = row_counter, column = 4).value = facility_information[key]['provider_city']
+		target_ws.cell(row = row_counter, column = 5).value = facility_information[key]['provider_state']
+		target_ws.cell(row = row_counter, column = 6).value = facility_information[key]['provider_zip_code']
+		target_ws.cell(row = row_counter, column = 7).value = facility_information[key]['phone_number']
+		target_ws.cell(row = row_counter, column = 8).value = "SNF"
+		target_ws.cell(row = row_counter, column = 9).value = facility_information[key]['total_beds']
+		target_ws.cell(row = row_counter, column = 10).value = "-"												#Distance parameter need to implement the Calculator
+		target_ws.cell(row = row_counter, column = 11).value = facility_information[key]['sff_facility']
+		target_ws.cell(row = row_counter, column = 12).value = facility_information[key]['occupancy']
+		target_ws.cell(row = row_counter, column = 13).value = facility_information[key]['continuing_care_retirement_community']
+		target_ws.cell(row = row_counter, column = 14).value = facility_information[key]['provider_resides_in_hospital']
+		target_ws.cell(row = row_counter, column = 15).value = facility_information[key]['changed_ownership_TTM']
+		target_ws.cell(row = row_counter, column = 16).value = facility_information[key]['number_of_penalties']
+		target_ws.cell(row = row_counter, column = 17).value = facility_information[key]['CMS_rating']
 
-	return render(request, 'comps/compResults.html', {'facility_information': facility_information})
+		row_counter += 1
+
+	workbook_name = "Competitive Market.xlsx"
+	target_wb.save("C:\\Users\\John Berry\\Desktop\\Comp Tables\\"+workbook_name) ## Need to update to server
+    
+

@@ -6,6 +6,4 @@ urlpatterns = [
 
     url(r'^find/$', views.find, name="find"),
     url(r'^compsearch/$', views.compsearch, name="compsearch")
-
-
  ]
