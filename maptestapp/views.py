@@ -8,15 +8,11 @@ from geopy.distance import vincenty
 from geopy.geocoders import Nominatim
 from time import sleep
 
-
 import json
 import requests
 import simplejson
 
 from django.contrib import messages
-
-#import urllib.request as urllib2
-
 
 def plot(request):
     msg_list = []
@@ -63,7 +59,6 @@ def plot(request):
         addr27 = request.POST.get('addr27', None)
         addr28 = request.POST.get('addr28', None)
         addr29 = request.POST.get('addr29', None)
-
 
         if subject != '':
             coords.append(subject)
@@ -131,46 +126,24 @@ def plot(request):
     for address in coords:
         address = address.strip()
         address = address.replace(" ","")
-
-
         url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyABF2rlCMvj-SdYYwsvKq3Wv2U0gPbGsQw"
-        sleep(0.2)
-
-
+        sleep(0.05)
         result = requests.get(url)
-
-        #print(result)
-
         data = json.loads(result.text)
-        #print(data)
-
+     
         try:
-
             coded_address = data['results'][0]['geometry']['location']
-
             coded_lat = str(coded_address['lat']) +","
             coded_lng = str(coded_address['lng'])
             tmp_coord_list.append(coded_lat)
             tmp_coord_list.append(coded_lng)
-
-
             coordinate_pairs.append(tmp_coord_list)
-
-            print(coordinate_pairs)
-
             tmp_coord_list = []
 
         except:
-
             msg_str = "Sorry! There was an error geocoding:  " + address
-
-            print("Error Geocoding for", msg_str)
-
             msg_list.append(msg_str)
-
             continue
-
-
 
 ####CALCULATE DISTANCE BETWEEN POINTS######
 
@@ -210,8 +183,6 @@ def plot(request):
         coordinate_pairs = []
         to_pass = []
 
-        #print(new_str)
-
         return render(request, 'mapping/multiple.html', {'new_str':new_str})
 
 #######################################################################################################################
@@ -245,15 +216,7 @@ def plot(request):
         coordinate_pairs = []
         to_pass = []
 
-        print("Number of Coords: ", len(new_str))
-
-        print("Message List is : ", msg_list)
-
-        #print("New String is :", new_str)
-
         return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_list':msg_list})
-
-
 
 def index(request):
 

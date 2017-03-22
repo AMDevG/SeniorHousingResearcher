@@ -38,9 +38,7 @@ def compsearch(request):
 		zips = getNearbyZips(zipcode, radius)  #Collects zipcodes in radius
 
 		facility_information = search_by_zipcode(zips, subject_address) #returns dictionary of all facilities' info with matching zips
-
 		write_excel_file(facility_information) #Creates Excel workbook containing data
-
 		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
 		#file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market2.xlsx"
 
@@ -60,23 +58,17 @@ def search_by_zipcode(zipcodes, subject_address):
 
 	for target in zipcodes:
 		base_url = "https://data.medicare.gov/resource/b27b-2uc7.json?$$app_token=Gw0QkTqNHfviiEteAF8odUR2X&provider_zip_code=" + target
-
-		print("Now scanning URL :  ", base_url)
 		r = requests.get(base_url)
 		result = json.loads(r.text)
-
 		if len(result)!= 0:
 			returned_data.append(result)
 
 	for lst in returned_data:
-		print(lst)
-		print("Lenght of list inside data : ", len(lst))
-
 		for i in range(0,len(lst)):
 			data = lst[i]
+
 		prov_name = data["provider_name"]
 		facility_information[prov_name] = {}
-
 		total_residents = float(data["number_of_residents_in_certified_beds"])
 		total_beds = float(data["number_of_certified_beds"])
 		reported_occ = total_residents/total_beds
@@ -110,8 +102,6 @@ def search_by_zipcode(zipcodes, subject_address):
 		facility_information[prov_name]['sff_facility'] = sff_facility
 		facility_information[prov_name]['changed_ownership_TTM'] = changed_ownership_TTM
 		facility_information[prov_name]['number_of_penalties'] = number_of_penalties
-
-
 	return facility_information
 
 def write_excel_file(facility_information):
