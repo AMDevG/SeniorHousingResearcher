@@ -7,7 +7,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Blueprint Mapper</title>
+    <title>SENIOR HOUSING MAPPER</title>
     <style>
             html, body {
               height: 100%;
@@ -21,7 +21,7 @@
   </head>
 
   <body>
-    
+
 <div>
     {% for m in msg_list %}
       <li>{{m}}</li>
@@ -40,7 +40,7 @@
           center: sec
         });
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-        for(i=0; i < addresses.length; i++){
+        for(i=0; i <= addresses.length; i++){
             if(i==0){
                 var marker = new google.maps.Marker({
                   position: addresses[i],
@@ -48,7 +48,6 @@
                   icon: "{%static 'img/BPMarker.PNG' %}"});
             }
             else{
-             //var image_select = "{%static 'img/Circle" + i + ".png' %}"
              var image_select = "{%static 'img/mark" + i + ".png' %}"
               var marker = new google.maps.Marker({
               position: addresses[i],

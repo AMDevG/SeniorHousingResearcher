@@ -2,7 +2,7 @@
 {%load staticfiles%}
 <!DOCTYPE html>
 
-<title>Blueprint Mapper</title>
+<title>Senior Housing Mapper</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet" href="{%static 'css/main.css' %}">
@@ -14,20 +14,13 @@
 
  <nav role="navigation" >
 
-        <img src="{%static 'img/logo.jpeg'%}" alt="LOGO" style="float:left;">
+       <!-- <img src="{%static 'img/logo.jpeg'%}" alt="LOGO" style="float:left;">  -->
                     <br>
-
         <a style="color:white;" href="{% url 'findComps:find' %}"> FIND SKILLED NURSING COMPETITORS </a>
-
-        <h2  class="header1"> BLUEPRINT MAPPER</h2> <br>
-
-
+        <h2  class="header1"> SENIOR HOUSING MAPPER</h2> <br>
     </nav>
 
-
-
 <div id="propBox" >
-
 <form class="w3-container" action = "/plot/" method="POST" id="plotForm">
 	{% csrf_token %}
 
@@ -38,7 +31,7 @@
   	<br>
 
 	<label class="w3-label"> S) Subject Property  </label>
-	<input id ="propInput" type="text" class ="w3-input"  name="subject"><br><br>
+	<input id ="propInput" type="text" class ="w3-input"  name="subject" required><br><br>
 
 	<label class="w3-label">1)  Property Address  </label>
 	<input id = "propInput" type="text" name="addr1"><br><br><br>

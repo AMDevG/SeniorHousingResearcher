@@ -162,7 +162,9 @@ def plot(request):
 
         except:
 
-            msg_str = "Sorry! There was an error geocoding:  " + address 
+            msg_str = "Sorry! There was an error geocoding:  " + address
+
+            print("Error Geocoding for", msg_str)
 
             msg_list.append(msg_str)
 
@@ -242,6 +244,10 @@ def plot(request):
         lat_lng = []
         coordinate_pairs = []
         to_pass = []
+
+        print("Number of Coords: ", len(new_str))
+
+        print("Message List is : ", msg_list)
 
         #print("New String is :", new_str)
 
