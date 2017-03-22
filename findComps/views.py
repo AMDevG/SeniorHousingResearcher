@@ -1,4 +1,5 @@
 import os
+import time
 import openpyxl as xl
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
@@ -12,7 +13,7 @@ from django.http import HttpResponse
 import json, requests
 import simplejson
 
-returned_data = []
+#returned_data = []
 
 def find(request):
 	return render(request, 'comps/findSNFS.html' )
@@ -30,23 +31,23 @@ def getDistance(subject_address, temp_address):
 
 def compsearch(request):
 	counter = 0
-	comp_objects =[]
-	flat_objects = []
 
 	if request.method == 'POST':
 		subject_address = request.POST.get('subj_addr', None)
 		zipcode = request.POST.get('zip', None)
 		radius = request.POST.get('radius', None)
 		zips = getNearbyZips(zipcode, radius)  #Collects zipcodes in radius
+
 		facility_information = search_by_zipcode(zips, subject_address) #returns dictionary of all facilities' info with matching zips
+
 		write_excel_file(facility_information) #Creates Excel workbook containing data
 
-		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market.xlsx"
+		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
 
 		if os.path.exists(file_path):		#Creates forced download
 			with open(file_path, 'rb') as fh:
 				response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-				response['Content-Disposition'] = 'inline; filename=' + "Competitive Market.xlsx"
+				response['Content-Disposition'] = 'inline; filename=' + "Competitive Market2.xlsx"
 				return response
 		else:
 		    raise Http404
@@ -55,12 +56,28 @@ def compsearch(request):
 def search_by_zipcode(zipcodes, subject_address):
  #Accepts array of zipcodes as argument, returns dictionary of nursing home info for homes in those zipcodes
  	facility_information = {}
+ 	returned_data = []
+
+ 	print("The Length of the Zipcodes is  : ", len(zipcodes))
+
  	for target in zipcodes:
- 		base_url = "https://data.medicare.gov/resource/b27b-2uc7.json?provider_zip_code="
- 		base_url = base_url + target
- 		r = requests.get(base_url)
- 		result = json.loads(r.text)
- 		returned_data.append(result)
+
+
+ 	    base_url = "https://data.medicare.gov/resource/b27b-2uc7.json?$$app_token=Gw0QkTqNHfviiEteAF8odUR2X&provider_zip_code=" + target
+
+        print("Now scanning URL :  ", base_url)
+
+        r = requests.get(base_url)
+
+        print("Response from URL is : ", r)
+
+        result = json.loads(r.text)
+
+        print("Result is  : ", result)
+
+        returned_data.append(result)
+
+ 	print("returned_data is now : ", returned_data)
 
  	for lst in returned_data:
  		for i in range(0,len(lst)):
@@ -103,16 +120,20 @@ def search_by_zipcode(zipcodes, subject_address):
  		facility_information[prov_name]['changed_ownership_TTM'] = changed_ownership_TTM
  		facility_information[prov_name]['number_of_penalties'] = number_of_penalties
 
+ 	print("Facility Info is : ", facility_information)
  	return facility_information
 
 def write_excel_file(facility_information):
 
-	col_counter = 2
-	row_counter = 2
-	target_wb = xl.load_workbook("/home/blueprintmapper/BPMapper/findComps/Comp Tables/compTemplate.xlsx")  #Need to change for server
-	target_ws = target_wb["Competitive Market"]
+    for key in facility_information:
+        print("Facility Information passed to excel writer contains:  ", key)
 
-	for key in facility_information:
+    col_counter = 2
+    row_counter = 2
+    target_wb = xl.load_workbook("/home/blueprintmapper/BPMapper/findComps/Comp Tables/compTemplate.xlsx")  #Need to change for server
+    target_ws = target_wb["Competitive Market"]
+
+    for key in facility_information:
 		target_ws.cell(row = row_counter, column = 2).value = facility_information[key]['provider_name']
 		target_ws.cell(row = row_counter, column = 3).value = facility_information[key]['provider_address']
 		target_ws.cell(row = row_counter, column = 4).value = facility_information[key]['provider_city']
@@ -132,7 +153,9 @@ def write_excel_file(facility_information):
 
 		row_counter += 1
 
-	workbook_name = "Competitive Market.xlsx"
-	target_wb.save("/home/blueprintmapper/BPMapper/findComps/Comp Tables/"+workbook_name) ## Need to update to server
+    workbook_name = ("Competitive Market2.xlsx")
+    target_wb.save("/home/blueprintmapper/BPMapper/findComps/Comp Tables/"+workbook_name) ## Need to update to server
+
+    print("Saved WorkBook :  ", workbook_name)
 
 
