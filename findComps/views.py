@@ -40,17 +40,17 @@ def compsearch(request):
 
 		facility_information = search_by_zipcode(zips, subject_address) #returns dictionary of all facilities' info with matching zips
 
-		write_excel_file(facility_information) #Creates Excel workbook containing data
+		# write_excel_file(facility_information) #Creates Excel workbook containing data
 
-		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
+		# file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
 
-		if os.path.exists(file_path):		#Creates forced download
-			with open(file_path, 'rb') as fh:
-				response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-				response['Content-Disposition'] = 'inline; filename=' + "Competitive Market2.xlsx"
-				return response
-		else:
-		    raise Http404
+		# if os.path.exists(file_path):		#Creates forced download
+		# 	with open(file_path, 'rb') as fh:
+		# 		response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+		# 		response['Content-Disposition'] = 'inline; filename=' + "Competitive Market2.xlsx"
+		# 		return response
+		# else:
+		#     raise Http404
 	return render(request, 'comps/compResults.html', {'facility_information': facility_information})
 
 def search_by_zipcode(zipcodes, subject_address):
@@ -65,17 +65,12 @@ def search_by_zipcode(zipcodes, subject_address):
 
  	    base_url = "https://data.medicare.gov/resource/b27b-2uc7.json?$$app_token=Gw0QkTqNHfviiEteAF8odUR2X&provider_zip_code=" + target
 
-        print("Now scanning URL :  ", base_url)
-
-        r = requests.get(base_url)
-
-        print("Response from URL is : ", r)
-
-        result = json.loads(r.text)
-
-        print("Result is  : ", result)
-
-        returned_data.append(result)
+ 	    print("Now scanning URL :  ", base_url)
+ 	    r = requests.get(base_url)
+ 	    print("Response from URL is : ", r)
+ 	    result = json.loads(r.text)
+ 	    print("Result is  : ", result)
+ 	    returned_data.append(result)
 
  	print("returned_data is now : ", returned_data)
 
@@ -134,24 +129,23 @@ def write_excel_file(facility_information):
     target_ws = target_wb["Competitive Market"]
 
     for key in facility_information:
-		target_ws.cell(row = row_counter, column = 2).value = facility_information[key]['provider_name']
-		target_ws.cell(row = row_counter, column = 3).value = facility_information[key]['provider_address']
-		target_ws.cell(row = row_counter, column = 4).value = facility_information[key]['provider_city']
-		target_ws.cell(row = row_counter, column = 5).value = facility_information[key]['provider_state']
-		target_ws.cell(row = row_counter, column = 6).value = facility_information[key]['provider_zip_code']
-		target_ws.cell(row = row_counter, column = 7).value = facility_information[key]['phone_number']
-		target_ws.cell(row = row_counter, column = 8).value = "SNF"
-		target_ws.cell(row = row_counter, column = 9).value = facility_information[key]['total_beds']
-		target_ws.cell(row = row_counter, column = 10).value = facility_information[key]['distance']		#Distance parameter need to implement the Calculator
-		target_ws.cell(row = row_counter, column = 11).value = facility_information[key]['sff_facility']
-		target_ws.cell(row = row_counter, column = 12).value = facility_information[key]['occupancy']
-		target_ws.cell(row = row_counter, column = 13).value = facility_information[key]['continuing_care_retirement_community']
-		target_ws.cell(row = row_counter, column = 14).value = facility_information[key]['provider_resides_in_hospital']
-		target_ws.cell(row = row_counter, column = 15).value = facility_information[key]['changed_ownership_TTM']
-		target_ws.cell(row = row_counter, column = 16).value = facility_information[key]['number_of_penalties']
-		target_ws.cell(row = row_counter, column = 17).value = facility_information[key]['CMS_rating']
-
-		row_counter += 1
+    	target_ws.cell(row = row_counter, column = 2).value = facility_information[key]['provider_name']
+    	target_ws.cell(row = row_counter, column = 3).value = facility_information[key]['provider_address']
+    	target_ws.cell(row = row_counter, column = 4).value = facility_information[key]['provider_city']
+    	target_ws.cell(row = row_counter, column = 5).value = facility_information[key]['provider_state']
+    	target_ws.cell(row = row_counter, column = 6).value = facility_information[key]['provider_zip_code']
+    	target_ws.cell(row = row_counter, column = 7).value = facility_information[key]['phone_number']
+    	target_ws.cell(row = row_counter, column = 8).value = "SNF"
+    	target_ws.cell(row = row_counter, column = 9).value = facility_information[key]['total_beds']
+    	target_ws.cell(row = row_counter, column = 10).value = facility_information[key]['distance']		#Distance parameter need to implement the Calculator
+    	target_ws.cell(row = row_counter, column = 11).value = facility_information[key]['sff_facility']
+    	target_ws.cell(row = row_counter, column = 12).value = facility_information[key]['occupancy']
+    	target_ws.cell(row = row_counter, column = 13).value = facility_information[key]['continuing_care_retirement_community']
+    	target_ws.cell(row = row_counter, column = 14).value = facility_information[key]['provider_resides_in_hospital']
+    	target_ws.cell(row = row_counter, column = 15).value = facility_information[key]['changed_ownership_TTM']
+    	target_ws.cell(row = row_counter, column = 16).value = facility_information[key]['number_of_penalties']
+    	target_ws.cell(row = row_counter, column = 17).value = facility_information[key]['CMS_rating']
+    	row_counter += 1
 
     workbook_name = ("Competitive Market2.xlsx")
     target_wb.save("/home/blueprintmapper/BPMapper/findComps/Comp Tables/"+workbook_name) ## Need to update to server
