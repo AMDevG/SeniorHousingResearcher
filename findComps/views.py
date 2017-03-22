@@ -13,14 +13,13 @@ from django.http import HttpResponse
 import json, requests
 import simplejson
 
-#returned_data = []
+returned_data = []
 
 def find(request):
 	return render(request, 'comps/findSNFS.html' )
 
 def getDistance(subject_address, temp_address):
 	try:
-		print("GETTING GOOGLE DISTANCE")
 		url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+subject_address+"&destinations="+temp_address+"&key=AIzaSyABAGhtae7h91pf24nfyZ6eFiPThWW3W4M"
 		result = requests.get(url)
 		data = json.loads(result.text)
@@ -56,72 +55,66 @@ def compsearch(request):
 def search_by_zipcode(zipcodes, subject_address):
  #Accepts array of zipcodes as argument, returns dictionary of nursing home info for homes in those zipcodes
  	facility_information = {}
- 	returned_data = []
-
- 	print("The Length of the Zipcodes is  : ", len(zipcodes))
+ 	del returned_data[:]
 
  	for target in zipcodes:
-
-
  	    base_url = "https://data.medicare.gov/resource/b27b-2uc7.json?$$app_token=Gw0QkTqNHfviiEteAF8odUR2X&provider_zip_code=" + target
 
  	    print("Now scanning URL :  ", base_url)
  	    r = requests.get(base_url)
- 	    print("Response from URL is : ", r)
  	    result = json.loads(r.text)
- 	    print("Result is  : ", result)
- 	    returned_data.append(result)
+ 	    if len(result) != 0:
+ 	        returned_data.append(result)
+        else:
+            print("Empty result list!")
 
- 	print("returned_data is now : ", returned_data)
 
  	for lst in returned_data:
- 		for i in range(0,len(lst)):
+ 	    print(lst)
+ 	    print("Lenght of list inside data : ", len(lst))
+ 	    for i in range(0,len(lst)):
  			data = lst[i]
+        prov_name = data["provider_name"]
+        facility_information[prov_name] = {}
 
- 		prov_name = data["provider_name"]
- 		facility_information[prov_name] = {}
+        total_residents = float(data["number_of_residents_in_certified_beds"])
+        total_beds = float(data["number_of_certified_beds"])
+        reported_occ = total_residents/total_beds
 
- 		total_residents = float(data["number_of_residents_in_certified_beds"])
- 		total_beds = float(data["number_of_certified_beds"])
- 		reported_occ = total_residents/total_beds
+        try:
+         overall_rating = data["overall_rating"]
+        except:
+         pass
 
- 		try:
- 			overall_rating = data["overall_rating"]
- 		except:
- 			pass
+        phone_number = data["provider_phone_number"]
+        sff_facility = data["special_focus_facility"]
+        changed_ownership_TTM = data["provider_changed_ownership_in_last_12_months"]
+        number_of_penalties = data["total_number_of_penalties"]
 
- 		phone_number = data["provider_phone_number"]
- 		sff_facility = data["special_focus_facility"]
- 		changed_ownership_TTM = data["provider_changed_ownership_in_last_12_months"]
- 		number_of_penalties = data["total_number_of_penalties"]
+        facility_information[prov_name]['provider_name'] = data["provider_name"].lower().title()
+        facility_information[prov_name]['provider_address'] = data["provider_address"]
+        facility_information[prov_name]['provider_city'] = data["provider_city"].lower().title()
+        facility_information[prov_name]['provider_state'] = data["provider_state"]
+        facility_information[prov_name]['provider_zip_code'] = data["provider_zip_code"]
 
- 		facility_information[prov_name]['provider_name'] = data["provider_name"].lower().title()
- 		facility_information[prov_name]['provider_address'] = data["provider_address"]
- 		facility_information[prov_name]['provider_city'] = data["provider_city"].lower().title()
- 		facility_information[prov_name]['provider_state'] = data["provider_state"]
- 		facility_information[prov_name]['provider_zip_code'] = data["provider_zip_code"]
+        formatted_address = data["provider_address"] + data["provider_city"] + data["provider_state"] + data["provider_zip_code"]
+        distance = getDistance(subject_address, formatted_address)
+        facility_information[prov_name]['distance'] = distance
 
- 		formatted_address = data["provider_address"] + data["provider_city"] + data["provider_state"] + data["provider_zip_code"]
- 		distance = getDistance(subject_address, formatted_address)
- 		facility_information[prov_name]['distance'] = distance
+        facility_information[prov_name]['continuing_care_retirement_community'] = data['continuing_care_retirement_community']
+        facility_information[prov_name]['provider_resides_in_hospital'] = data['provider_resides_in_hospital']
+        facility_information[prov_name]['CMS_rating'] = overall_rating
+        facility_information[prov_name]['occupancy'] = reported_occ
+        facility_information[prov_name]['total_beds'] = total_beds
+        facility_information[prov_name]['phone_number'] = phone_number
+        facility_information[prov_name]['sff_facility'] = sff_facility
+        facility_information[prov_name]['changed_ownership_TTM'] = changed_ownership_TTM
+        facility_information[prov_name]['number_of_penalties'] = number_of_penalties
 
- 		facility_information[prov_name]['continuing_care_retirement_community'] = data['continuing_care_retirement_community']
- 		facility_information[prov_name]['provider_resides_in_hospital'] = data['provider_resides_in_hospital']
- 		facility_information[prov_name]['CMS_rating'] = overall_rating
- 		facility_information[prov_name]['occupancy'] = reported_occ
- 		facility_information[prov_name]['total_beds'] = total_beds
- 		facility_information[prov_name]['phone_number'] = phone_number
- 		facility_information[prov_name]['sff_facility'] = sff_facility
- 		facility_information[prov_name]['changed_ownership_TTM'] = changed_ownership_TTM
- 		facility_information[prov_name]['number_of_penalties'] = number_of_penalties
 
- 	print("Facility Info is : ", facility_information)
  	return facility_information
 
 def write_excel_file(facility_information):
-
-    for key in facility_information:
-        print("Facility Information passed to excel writer contains:  ", key)
 
     col_counter = 2
     row_counter = 2
@@ -150,6 +143,6 @@ def write_excel_file(facility_information):
     workbook_name = ("Competitive Market2.xlsx")
     target_wb.save("/home/blueprintmapper/BPMapper/findComps/Comp Tables/"+workbook_name) ## Need to update to server
 
-    print("Saved WorkBook :  ", workbook_name)
+
 
 
