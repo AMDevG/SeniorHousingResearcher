@@ -39,16 +39,15 @@ def compsearch(request):
 
 		facility_information = search_by_zipcode(zips, subject_address) #returns dictionary of all facilities' info with matching zips
 		write_excel_file(facility_information) #Creates Excel workbook containing data
-		#file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
-		file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market2.xlsx"
+		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
+		#file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market2.xlsx"
 
 		if os.path.exists(file_path):		#Creates forced download
 			with open(file_path, 'rb') as fh:
 				response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
 				response['Content-Disposition'] = 'inline; filename=' + "Competitive Market2.xlsx"
 				return response
-		else:
-			raise Http404
+
 	return render(request, 'comps/compResults.html', {'facility_information': facility_information})
 
 def search_by_zipcode(zipcodes, subject_address):
