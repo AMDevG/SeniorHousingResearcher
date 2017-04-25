@@ -39,8 +39,8 @@ def compsearch(request):
 
 		facility_information = search_by_zipcode(zips, subject_address) #returns dictionary of all facilities' info with matching zips
 		write_excel_file(facility_information) #Creates Excel workbook containing data
-		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
-		#file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market2.xlsx"
+		#file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
+		file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market2.xlsx"
 
 		if os.path.exists(file_path):		#Creates forced download
 			with open(file_path, 'rb') as fh:
@@ -67,41 +67,41 @@ def search_by_zipcode(zipcodes, subject_address):
 		for i in range(0,len(lst)):
 			data = lst[i]
 
-		prov_name = data["provider_name"]
-		facility_information[prov_name] = {}
-		total_residents = float(data["number_of_residents_in_certified_beds"])
-		total_beds = float(data["number_of_certified_beds"])
-		reported_occ = total_residents/total_beds
+			prov_name = data["provider_name"]
+			facility_information[prov_name] = {}
+			total_residents = float(data["number_of_residents_in_certified_beds"])
+			total_beds = float(data["number_of_certified_beds"])
+			reported_occ = total_residents/total_beds
 
-		try:
-			overall_rating = data["overall_rating"]
-		except:
-			pass
+			try:
+				overall_rating = data["overall_rating"]
+			except:
+				pass
 
-		phone_number = data["provider_phone_number"]
-		sff_facility = data["special_focus_facility"]
-		changed_ownership_TTM = data["provider_changed_ownership_in_last_12_months"]
-		number_of_penalties = data["total_number_of_penalties"]
+			phone_number = data["provider_phone_number"]
+			sff_facility = data["special_focus_facility"]
+			changed_ownership_TTM = data["provider_changed_ownership_in_last_12_months"]
+			number_of_penalties = data["total_number_of_penalties"]
 
-		facility_information[prov_name]['provider_name'] = data["provider_name"].lower().title()
-		facility_information[prov_name]['provider_address'] = data["provider_address"]
-		facility_information[prov_name]['provider_city'] = data["provider_city"].lower().title()
-		facility_information[prov_name]['provider_state'] = data["provider_state"]
-		facility_information[prov_name]['provider_zip_code'] = data["provider_zip_code"]
+			facility_information[prov_name]['provider_name'] = data["provider_name"].lower().title()
+			facility_information[prov_name]['provider_address'] = data["provider_address"]
+			facility_information[prov_name]['provider_city'] = data["provider_city"].lower().title()
+			facility_information[prov_name]['provider_state'] = data["provider_state"]
+			facility_information[prov_name]['provider_zip_code'] = data["provider_zip_code"]
 
-		formatted_address = data["provider_address"] + data["provider_city"] + data["provider_state"] + data["provider_zip_code"]
-		distance = getDistance(subject_address, formatted_address)
-		facility_information[prov_name]['distance'] = distance
+			formatted_address = data["provider_address"] + data["provider_city"] + data["provider_state"] + data["provider_zip_code"]
+			distance = getDistance(subject_address, formatted_address)
+			facility_information[prov_name]['distance'] = distance
 
-		facility_information[prov_name]['continuing_care_retirement_community'] = data['continuing_care_retirement_community']
-		facility_information[prov_name]['provider_resides_in_hospital'] = data['provider_resides_in_hospital']
-		facility_information[prov_name]['CMS_rating'] = overall_rating
-		facility_information[prov_name]['occupancy'] = reported_occ
-		facility_information[prov_name]['total_beds'] = total_beds
-		facility_information[prov_name]['phone_number'] = phone_number
-		facility_information[prov_name]['sff_facility'] = sff_facility
-		facility_information[prov_name]['changed_ownership_TTM'] = changed_ownership_TTM
-		facility_information[prov_name]['number_of_penalties'] = number_of_penalties
+			facility_information[prov_name]['continuing_care_retirement_community'] = data['continuing_care_retirement_community']
+			facility_information[prov_name]['provider_resides_in_hospital'] = data['provider_resides_in_hospital']
+			facility_information[prov_name]['CMS_rating'] = overall_rating
+			facility_information[prov_name]['occupancy'] = reported_occ
+			facility_information[prov_name]['total_beds'] = total_beds
+			facility_information[prov_name]['phone_number'] = phone_number
+			facility_information[prov_name]['sff_facility'] = sff_facility
+			facility_information[prov_name]['changed_ownership_TTM'] = changed_ownership_TTM
+			facility_information[prov_name]['number_of_penalties'] = number_of_penalties
 	return facility_information
 
 def write_excel_file(facility_information):
