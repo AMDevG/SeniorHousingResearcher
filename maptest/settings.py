@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '63vfc(v3a6m)+$2m^ll(4@%5t_8gj2*u%d$dmh3%n-gkfe%(*o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["www.seniorhousingresearcher.com"]
 
 
 # Application definition
@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'maptestapp', 
+    'maptestapp',
     'findComps'
 )
 
