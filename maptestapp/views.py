@@ -126,11 +126,11 @@ def plot(request):
     for address in coords:
         address = address.strip()
         address = address.replace(" ","")
-        url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyABF2rlCMvj-SdYYwsvKq3Wv2U0gPbGsQw"
+        url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyCZl9Lgnc1a6tVGKagzs1EvKrcq_iQMVmw"
         sleep(0.05)
         result = requests.get(url)
         data = json.loads(result.text)
-     
+
         try:
             coded_address = data['results'][0]['geometry']['location']
             coded_lat = str(coded_address['lat']) +","
@@ -149,47 +149,11 @@ def plot(request):
 
 #####################################################################################################################################
 
-    if distance_selection == "distance":
-        distance_dict = {}  #HOLDS LAT LNG WITH DISTANCE TO OBTAIN SORTED LIST FOR MARKING
-        subject_address = coordinate_pairs[0]
-        subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
-        target_address = 0
 
-        for i in range(1, len(coordinate_pairs)):
-                                                     ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
-            target_address = coordinate_pairs[i]
-            target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-            distance = vincenty(subject_str, target_str).miles
-            distance_dict[target_str] = distance
-
-        sorted_pairs = sorted(distance_dict, key=lambda key: distance_dict[key])  ### CREATES SORTED LIST BY KEY
-        sorted_pairs.insert(0,subject_str)
-
-                                               ## APPEND SUBJECT PROPERTY AS FIRST ITEM IN SORTED LIST
-        for item in sorted_pairs:
-            split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
-
-            for i in range(0,len(sorted_pairs)):
-                formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
-                if formatted not in to_pass:
-                    to_pass.append(formatted)
-
-        for item in to_pass:
-            new_str = new_str + item + ", "
-            item = item.replace("'","")
-
-        new_str = new_str +']'
-        lat_lng = []
-        coordinate_pairs = []
-        to_pass = []
-
-        return render(request, 'mapping/multiple.html', {'new_str':new_str})
-
-#######################################################################################################################
-
-    elif distance_selection == "order":
+    if distance_selection == "order":
 
         sorted_pairs = []
+
         subject_address = coordinate_pairs[0]
         subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
         sorted_pairs.append(subject_str)
@@ -216,7 +180,7 @@ def plot(request):
         coordinate_pairs = []
         to_pass = []
 
-        return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_list':msg_list})
+    return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_list':msg_list})
 
 def index(request):
 

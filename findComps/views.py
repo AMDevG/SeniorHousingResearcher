@@ -34,7 +34,7 @@ def getDistance(subject_address, temp_address):
 
 def createDownload():
 
-	file_path = "C:\\Users\\John Berry\\Desktop\\Comp Tables\\Competitive Market2.xlsx"
+	file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
 
 	if os.path.exists(file_path):		#Creates forced download
 			with open(file_path, 'rb') as fh:
@@ -56,10 +56,10 @@ def compsearch(request):
 		facility_information = search_by_zipcode(zips, subject_address) #returns dictionary of all facilities' info with matching zips
 		write_excel_file(facility_information) #Creates Excel workbook containing data
 
-		#file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
+		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
 
 
-		###MAY NEED TO PUT INTO OTHER FUNCTION TO REDIRECT AFTER 
+		###MAY NEED TO PUT INTO OTHER FUNCTION TO REDIRECT AFTER
 		return createDownload()
 
 	return render(request, 'comps/findSNFS.html')
@@ -121,8 +121,8 @@ def write_excel_file(facility_information):
 
 	col_counter = 2
 	row_counter = 2
-	#target_wb = xl.load_workbook("/home/blueprintmapper/BPMapper/findComps/Comp Tables/compTemplate.xlsx")  #Need to change for server
-	target_wb = xl.load_workbook("C:\\Users\\John Berry\\Desktop\\Comp Tables\\compTemplate.xlsx")
+	target_wb = xl.load_workbook("/home/blueprintmapper/BPMapper/findComps/Comp Tables/compTemplate.xlsx")  #Need to change for server
+	#target_wb = xl.load_workbook("C:\\Users\\John Berry\\Desktop\\Comp Tables\\compTemplate.xlsx")
 	target_ws = target_wb["Competitive Market"]
 
 	for key in facility_information:
@@ -145,8 +145,8 @@ def write_excel_file(facility_information):
 		row_counter += 1
 
 	workbook_name = ("Competitive Market2.xlsx")
-	#target_wb.save("/home/blueprintmapper/BPMapper/findComps/Comp Tables/"+workbook_name) ## Need to update to server
-	target_wb.save("C:\\Users\\John Berry\\Desktop\\Comp Tables\\"+workbook_name)
+	target_wb.save("/home/blueprintmapper/BPMapper/findComps/Comp Tables/"+workbook_name) ## Need to update to server
+	#target_wb.save("C:\\Users\\John Berry\\Desktop\\Comp Tables\\"+workbook_name)
 
 
 
