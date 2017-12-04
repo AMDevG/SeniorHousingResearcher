@@ -20,17 +20,14 @@ def find(request):
 
 def getDistance(subject_address, temp_address):
 	try:
-		url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+subject_address+"&destinations="+temp_address+"&key=AIzaSyABAGhtae7h91pf24nfyZ6eFiPThWW3W4M"
+		url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins="+subject_address+"&destinations="+temp_address+"&key=AIzaSyB7Qt9n7Je5LuwMJgb6JfkcZuPPdOJPQtE"
 		result = requests.get(url)
 		data = json.loads(result.text)
+		print("Gmaps return data is ", data)
 		distance = data['rows'][0]['elements'][0]['distance']['text']
 		return distance
 	except:
 		return None
-
-
-
-
 
 def createDownload():
 
@@ -42,10 +39,7 @@ def createDownload():
 				response['Content-Disposition'] = 'inline; filename=' + "Competitive Market2.xlsx"
 				return response
 
-
-
 def compsearch(request):
-	counter = 0
 
 	if request.method == 'POST':
 		subject_address = request.POST.get('subj_addr', None)
@@ -57,9 +51,6 @@ def compsearch(request):
 		write_excel_file(facility_information) #Creates Excel workbook containing data
 
 		file_path = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
-
-
-		###MAY NEED TO PUT INTO OTHER FUNCTION TO REDIRECT AFTER
 		return createDownload()
 
 	return render(request, 'comps/findSNFS.html')
@@ -103,6 +94,7 @@ def search_by_zipcode(zipcodes, subject_address):
 			facility_information[prov_name]['provider_zip_code'] = data["provider_zip_code"]
 
 			formatted_address = data["provider_address"] + data["provider_city"] + data["provider_state"] + data["provider_zip_code"]
+
 			distance = getDistance(subject_address, formatted_address)
 			facility_information[prov_name]['distance'] = distance
 
