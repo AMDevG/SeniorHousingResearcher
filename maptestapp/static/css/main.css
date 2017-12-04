@@ -19,6 +19,11 @@
 
 }
 
+#compButton{
+
+    background-color: rgb(120, 146, 194); border-radius: 28px; border: 1px solid rgb(78, 96, 150); display: inline-block; cursor: pointer; color: rgb(255, 255, 255); font-family: Arial; font-size: 17px; font-weight: bold; padding: 24px 51px; text-decoration: none; text-shadow: rgb(40, 57, 102) 0px 1px 0px;
+}
+
 .w3-label{
 	font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
 	color: white;
