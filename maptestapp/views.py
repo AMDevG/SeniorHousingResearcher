@@ -1,34 +1,24 @@
 from django.shortcuts import render
-from rest_framework import permissions, viewsets,views
-from maptestapp.models import Account
-from maptestapp.permissions import IsAccountOwner
-from maptestapp.serializers import AccountSerializer
-import geocoder
-from geopy.distance import vincenty
-from geopy.geocoders import Nominatim
-from time import sleep
+from django.contrib import messages
 
 import json
 import requests
-import simplejson
+from time import sleep
+from rest_framework import permissions, viewsets,views
+from geopy.distance import vincenty
+from geopy.geocoders import Nominatim
 
-from django.contrib import messages
+from .models import Account
+from .permissions import IsAccountOwner
+from .serializers import AccountSerializer
 
 def plot(request):
-    msg_list = []
-    coords = []
-    lat_lng = []
     coordinate_pairs = []
-    to_pass = []
-    new_str = '['
+    coords = []
+    msg_list = []
 
+    #CREATE DYNAMIC FORM TO ADD/SUBTRACT FIELDS
     if request.method == 'POST':
-        coords = []
-        lat_lng = []
-        coordinate_pairs = []
-        to_pass = []
-
-        distance_selection = request.POST.get('sortOption', None)
         subject = request.POST.get('subject', None)
         addr1 = request.POST.get('addr1', None)
         addr2 = request.POST.get('addr2', None)
@@ -126,12 +116,11 @@ def plot(request):
     for address in coords:
         address = address.strip()
         address = address.replace(" ","")
-        url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyCZl9Lgnc1a6tVGKagzs1EvKrcq_iQMVmw"
-        sleep(0.05)
-        result = requests.get(url)
-        data = json.loads(result.text)
-
         try:
+            url = "https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&key=AIzaSyCZl9Lgnc1a6tVGKagzs1EvKrcq_iQMVmw"
+            sleep(0.02)
+            result = requests.get(url)
+            data = json.loads(result.text)
             coded_address = data['results'][0]['geometry']['location']
             coded_lat = str(coded_address['lat']) +","
             coded_lng = str(coded_address['lng'])
@@ -145,61 +134,48 @@ def plot(request):
             msg_list.append(msg_str)
             continue
 
-####CALCULATE DISTANCE BETWEEN POINTS######
+    formatted_js = process_coordinates(coordinate_pairs)
+    return render(request, 'mapping/multiple.html', {'formatted_js':formatted_js, 'msg_list':msg_list})
 
-#####################################################################################################################################
+def process_coordinates(coordinate_pairs):
+    new_str = '['
+    sorted_pairs = []
+    to_pass = []
 
+    subject_address = coordinate_pairs[0]
+    subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
+    sorted_pairs.append(subject_str)
 
-    if distance_selection == "order":
+    for i in range(1, len(coordinate_pairs)):
+        target_address = coordinate_pairs[i]
+        target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
+        sorted_pairs.append(target_str)
 
-        sorted_pairs = []
+    for item in sorted_pairs:
+        split_coords = item.split()
+        formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
+        to_pass.append(formatted)
 
-        subject_address = coordinate_pairs[0]
-        subject_str = subject_address[0].replace(",","") + ", " + subject_address[1].replace(",","")
-        sorted_pairs.append(subject_str)
+    for item in to_pass:
+        new_str = new_str + item + ", "
+        item = item.replace("'","")
+    new_str = new_str +']'
 
-        for i in range(1, len(coordinate_pairs)): ##ITERATES THROUGH COORD PAIRS PUTS DISTANCE INTO DICT
-            target_address = coordinate_pairs[i]
-            target_str = target_address[0].replace(",","") + ", " + target_address[1].replace(",","")
-            sorted_pairs.append(target_str)
-
-        for item in sorted_pairs:
-            split_coords = item.split()        ## FORMATS FOR JAVASCRIPT
-
-            for i in range(0,len(sorted_pairs)):
-                formatted = '{lat:'+split_coords[0]+' lng:'+split_coords[1] + '}'
-                if formatted not in to_pass:
-                    to_pass.append(formatted)
-
-        for item in to_pass:
-            new_str = new_str + item + ", "
-            item = item.replace("'","")
-
-        new_str = new_str +']'
-        lat_lng = []
-        coordinate_pairs = []
-        to_pass = []
-
-    return render(request, 'mapping/multiple.html', {'new_str':new_str, 'msg_list':msg_list})
+    return new_str
 
 def index(request):
-
     return render(request, 'mapping/index.html')
 
 def signup(request):
-
 	return render(request, 'mapping/signup.html')
 
 def success(request):
-
 	if request.method == 'POST':
 		email_addr = request.POST.get('email')
 		user_name = request.POST.get('username')
 		email_list = [email_addr]
 		Account.objects.create_user(email_addr, username=user_name)
-
 	return render(request, 'mapping/success.html', {'email_list':email_list})
-
 
 class AccountViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'

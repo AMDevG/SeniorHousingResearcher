@@ -1,6 +1,5 @@
 import pyzipcode
 
-
 def getNearbyZips(targetZip, searchRad):
     clean_list = []
     zipcodeDB = pyzipcode.ZipCodeDatabase()
