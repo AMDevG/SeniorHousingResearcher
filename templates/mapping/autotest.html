@@ -8,13 +8,17 @@
 <link rel="stylesheet" href="{%static 'css/main.css' %}">
 
 <body bgcolor="#375472">
- <nav role="navigation" ><br>
+
+ <nav role="navigation" >
+                    <br>
+
     <span class = "compButton" id="compButton">
         <a style="color:white;" href="{% url 'findComps:find' %}">
             Download Skilled Nursing Comp Data</a>
     </span>
 
-    <h2 class="header1"> SENIOR HOUSING MAPPER</h2><br>
+        <h2  class="header1"> SENIOR HOUSING MAPPER</h2> <br>
+
     </nav>
 
 <div id="propBox" >
@@ -111,7 +115,10 @@
   <label class="w3-label">29) Property Address  </label>
   <input id = "propInput" type="text" name="addr29"><br><br><br>
 
+
   <input type="submit" class="button-scrolly" value="Plot Facilities" id="send">
+
+
 </form>
 </div>
 
