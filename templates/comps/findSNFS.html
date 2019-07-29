@@ -2,8 +2,6 @@
 {%load staticfiles%}
 <!DOCTYPE html>
 
-<script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.3.2.min.js"></script>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="{%static 'css/comp.css' %}">
 
@@ -14,27 +12,27 @@
 <form action = "{% url 'findComps:compsearch' %}" method="POST" id="searchForm" style="width:800px; margin:0 auto;">
 								{% csrf_token %}
 
-								  <input style="width:800px; margin:0 auto; text-align:center;" type="text" name="subj_addr" placeholder="Enter the full address of subject property.." required>
-								  <input style="width:800px; margin:0 auto; text-align:center;" type="text" name="zip" placeholder="Enter your zipcode to get started.." required><br>
-								  <input style="width:800px; margin:0 auto; text-align:center;" type="text" name="radius" placeholder="Enter desired search radius.."required>
-
-
-								  <input style="width:800px; margin:0 auto;" type="submit" id = "searchButton" class="button scrolly" value="Find Care" onclick="loading();">
-
+					<input style="width:800px; margin:0 auto; text-align:center;" type="text" name="subj_addr" placeholder="Enter the full address of subject property.." required>
+					<input style="width:800px; margin:0 auto; text-align:center;" type="text" name="zip" placeholder="Enter your zipcode to get started.." required><br>
+					<input style="width:800px; margin:0 auto; text-align:center;" type="text" name="radius" placeholder="Enter desired search radius.."required>
+					<input style="width:800px; margin:0 auto;" type="submit" id = "searchButton" class="button scrolly" value="Find Care" onclick="loading();">
                   <br>
 
-                  <img style="visibility: hidden;  margin:0 auto; display: block; margin-left: auto; margin:-right: auto" src="{%static 'img/loading_neg.gif' %}" id="img" />
-                        </div>
-                  </form>
-                  <br>
-                  <br>
-              </body>
+                <img style="visibility: hidden;  margin:0 auto; display: block; margin-left: auto; margin:-right: auto" src="{%static 'img/loading_neg.gif' %}" id="img" />
 
-            <script>
+        </form>
+                  <br>
+                  <br>
+
+
+
+    </body>
+
+    <script>
             function loading(){
               document.getElementById('img').style.visibility='visible';
             }
-            </script>
+    </script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

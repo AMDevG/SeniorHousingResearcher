@@ -21,8 +21,8 @@ if settings.DEBUG:
 	DATA_FILE_PATH = "C:\\Users\\John Berry\\Desktop\\SeniorHousingResearcher\\findComps\\Comp Tables\\Competitive Market2.xlsx"
 else:
 	COMP_TEMPLATE_FILE_PATH = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/compTemplate.xlsx"
-	DATA_FILE_PATH = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/compTemplate.xlsx"
-	
+	DATA_FILE_PATH = "/home/blueprintmapper/BPMapper/findComps/Comp Tables/Competitive Market2.xlsx"
+
 def find(request):
 	return render(request, 'comps/findSNFS.html' )
 
@@ -66,17 +66,21 @@ def search_by_zipcode(zipcodes, subject_address):
 		if len(result)!= 0:
 			returned_data.append(result)
 
+
 	for lst in returned_data:
 		for i in range(0,len(lst)):
 			data = lst[i]
 			prov_name = data["provider_name"]
 			facility_information[prov_name] = {}
-			total_residents = float(data["number_of_residents_in_certified_beds"])
+			try:
+			    total_residents = float(data["number_of_residents_in_certified_beds"])
+			except:
+			    print("Resident count error!")
 			total_beds = float(data["number_of_certified_beds"])
-			reported_occ = total_residents/total_beds
 
 			try:
 				overall_rating = data["overall_rating"]
+				reported_occ = total_residents/total_beds
 			except:
 				pass
 
@@ -93,7 +97,7 @@ def search_by_zipcode(zipcodes, subject_address):
 
 			formatted_address = data["provider_address"] + data["provider_city"] + data["provider_state"] + data["provider_zip_code"]
 			distance = getDistance(subject_address, formatted_address)
-			
+
 			facility_information[prov_name]['distance'] = distance
 			facility_information[prov_name]['continuing_care_retirement_community'] = data['continuing_care_retirement_community']
 			facility_information[prov_name]['provider_resides_in_hospital'] = data['provider_resides_in_hospital']
@@ -110,6 +114,7 @@ def write_excel_file(facility_information):
 	col_counter = 2
 	row_counter = 2
 	target_wb = xl.load_workbook(COMP_TEMPLATE_FILE_PATH)
+	target_wb.save("CompetitiveMarket.xlsx")
 	target_ws = target_wb["Competitive Market"]
 
 	for key in facility_information:

@@ -49,6 +49,17 @@ def plot(request):
         addr27 = request.POST.get('addr27', None)
         addr28 = request.POST.get('addr28', None)
         addr29 = request.POST.get('addr29', None)
+        addr30 = request.POST.get('addr30', None)
+        addr31 = request.POST.get('addr31', None)
+        addr32 = request.POST.get('addr32', None)
+        addr33 = request.POST.get('addr33', None)
+        addr34 = request.POST.get('addr34', None)
+        addr35 = request.POST.get('addr35', None)
+        addr36 = request.POST.get('addr36', None)
+        addr37 = request.POST.get('addr37', None)
+        addr38 = request.POST.get('addr38', None)
+        addr39 = request.POST.get('addr39', None)
+        addr40 = request.POST.get('addr40', None)
 
         if subject != '':
             coords.append(subject)
@@ -110,6 +121,28 @@ def plot(request):
             coords.append(addr28)
         if addr29 != '':
             coords.append(addr29)
+        if addr30 != '':
+            coords.append(addr30)
+        if addr31 != '':
+            coords.append(addr31)
+        if addr32 != '':
+            coords.append(addr32)
+        if addr33 != '':
+            coords.append(addr33)
+        if addr34 != '':
+            coords.append(addr34)
+        if addr35 != '':
+            coords.append(addr35)
+        if addr36 != '':
+            coords.append(addr36)
+        if addr37 != '':
+            coords.append(addr37)
+        if addr38 != '':
+            coords.append(addr38)
+        if addr39 != '':
+            coords.append(addr39)
+        if addr40 != '':
+            coords.append(addr40)
 
     tmp_coord_list = []
 
